@@ -154,6 +154,8 @@ namespace ProyectAudi.Controllers
             });
         }
 
+        //esto es una preuba 
+
         // Helpers
         private static bool ValidarPassword(string password, CREDENCIAL credencial)
         {
