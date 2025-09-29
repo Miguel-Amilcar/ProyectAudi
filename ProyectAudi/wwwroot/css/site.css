@@ -1,0 +1,195 @@
+/* === Base === */
+body {
+    margin: 0;
+    background-color: #e6f0fa; /* azul claro suave */
+    font-family: 'Segoe UI', sans-serif;
+    color: #1f2d5a; /* azul oscuro */
+}
+
+.main-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+/* === Cards === */
+.login-card,
+.mfa-card,
+.home-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(209, 217, 230, 0.6); /* gris suave */
+    display: flex;
+    overflow: hidden;
+    max-width: 1000px;
+    width: 100%;
+}
+
+/* === Illustration Panels === */
+.login-image,
+.mfa-image,
+.home-illustration {
+    flex: 1;
+    max-width: 400px;
+    min-height: 300px;
+    background: url('/images/login-illustration.png') center/contain no-repeat;
+    background-color: #dbe7f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
+
+    .login-image img,
+    .mfa-image img,
+    .home-illustration img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+
+/* === Form Panels === */
+.login-form,
+.mfa-form,
+.home-content {
+    flex: 1;
+    padding: 40px;
+}
+
+    .login-form h2,
+    .mfa-form h2,
+    .home-content h1 {
+        margin-bottom: 30px;
+        font-weight: 700;
+        color: #1f2d5a;
+        font-size: 2rem;
+    }
+
+    .home-content .lead {
+        font-size: 1.2rem;
+        color: #2a4d8f;
+    }
+
+/* === Form Elements === */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+    color: #2a4d8f;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d9e6;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #f9fbfd;
+    color: #1f2d5a;
+}
+
+input:invalid {
+    border-color: #d9534f;
+}
+
+input:valid {
+    border-color: #28a745;
+}
+
+/* === Buttons === */
+button,
+.btn-primary {
+    width: 100%;
+    padding: 12px 24px;
+    background-color: #2a4d8f;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    button:hover,
+    .btn-primary:hover {
+        background-color: #1a3a72;
+    }
+
+.btn-warning {
+    background-color: #f4c542;
+    color: #1f2d5a;
+    border: none;
+}
+
+    .btn-warning:hover {
+        background-color: #e0b837;
+    }
+
+.btn-outline-secondary {
+    border: 1px solid #2a4d8f;
+    color: #2a4d8f;
+    background-color: transparent;
+}
+
+    .btn-outline-secondary:hover {
+        background-color: #2a4d8f;
+        color: white;
+    }
+
+/* === MFA Status & QR === */
+.mfa-status {
+    margin-top: 20px;
+}
+
+.qr-preview {
+    text-align: center;
+    margin: 20px 0;
+}
+
+    .qr-preview img {
+        max-width: 200px;
+        border-radius: 8px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+
+/* === Home Features === */
+.home-features {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+}
+
+.feature {
+    flex: 1;
+    padding: 0 15px;
+    text-align: center;
+}
+
+    .feature h4 {
+        margin-bottom: 10px;
+        color: #2a4d8f;
+    }
+
+    .feature p {
+        color: #555;
+    }
+
+.login-form a {
+    font-size: 14px;
+    color: #2a4d8f;
+    text-decoration: none;
+}
+
+    .login-form a:hover {
+        text-decoration: underline;
+        color: #1a3a72;
+    }

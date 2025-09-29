@@ -1,0 +1,193 @@
+﻿@model IEnumerable<ProyectAudi.Models.USUARIO>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CUI)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PRIMERNOMBRE)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SEGUNDONOMBRE)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TERCERNOMBRE)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PRIMERAPELLIDO)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SEGUNDOAPELLIDO)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.APELLIDOCASADA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FECHA_NACIMIENTO)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TELEFONO)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DIRECCION)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PERSONA_NIT)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PERSONA_DIRECCION)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PERSONA_TELEFONOCASA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PERSONA_TELEFONOMOVIL)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FOTOGRAFIA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DPI_PDF)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.USUARIO_CORREO)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ESTADO_TINY)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ROL_ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CREADO_POR)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FECHA_CREACION)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MODIFICADO_POR)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FECHA_MODIFICACION)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ELIMINADO)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ELIMINADO_POR)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FECHA_ELIMINACION)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CUI)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PRIMERNOMBRE)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SEGUNDONOMBRE)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TERCERNOMBRE)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PRIMERAPELLIDO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SEGUNDOAPELLIDO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.APELLIDOCASADA)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FECHA_NACIMIENTO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TELEFONO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DIRECCION)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PERSONA_NIT)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PERSONA_DIRECCION)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PERSONA_TELEFONOCASA)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PERSONA_TELEFONOMOVIL)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FOTOGRAFIA)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DPI_PDF)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.USUARIO_CORREO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ESTADO_TINY)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ROL_ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CREADO_POR)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FECHA_CREACION)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MODIFICADO_POR)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FECHA_MODIFICACION)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ELIMINADO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ELIMINADO_POR)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FECHA_ELIMINACION)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.USUARIO_ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.USUARIO_ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.USUARIO_ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</body>
+</html>

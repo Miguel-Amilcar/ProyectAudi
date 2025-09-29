@@ -1,0 +1,27 @@
+﻿@model ProyectAudi.Modelspartial.ActivarMfaViewModel
+
+<div class="mfa-card">
+    <div class="mfa-form">
+        <h2>Activar autenticación en dos pasos</h2>
+
+        <p>Escanea el siguiente código QR con tu app de autenticación o ingresa la clave manualmente:</p>
+
+        <div class="qr-preview">
+            <img src="@ViewBag.QrUri" alt="Código QR para MFA" />
+        </div>
+
+        <p><strong>Clave manual:</strong> <code>@Model.SecretoBase32</code></p>
+
+        <form asp-action="ConfirmarMFA" method="post">
+            <input type="hidden" asp-for="SecretoBase32" />
+
+            <div class="form-group">
+                <label asp-for="CodigoVerificacion">Código de verificación</label>
+                <input asp-for="CodigoVerificacion" type="text" />
+                <span asp-validation-for="CodigoVerificacion" class="text-danger"></span>
+            </div>
+
+            <button type="submit">Verificar</button>
+        </form>
+    </div>
+</div>

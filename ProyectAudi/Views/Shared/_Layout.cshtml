@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ProyectoAudi</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    @if (!(ViewContext.RouteData.Values["Controller"]?.ToString() == "Credenciales"))
+    {
+        <header>
+            <nav class="navbar navbar-light bg-white border-bottom shadow-sm mb-3 px-4">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">ProyectoAudi</a>
+            </nav>
+        </header>
+    }
+
+    <main class="main-wrapper">
+        @RenderBody()
+    </main>
+
+    @if (!(ViewContext.RouteData.Values["Controller"]?.ToString() == "Credenciales"))
+    {
+        <footer class="footer text-muted text-center py-3">
+            &copy; 2025 - ProyectoAudi - <a asp-controller="Home" asp-action="Privacy">Privacidad</a>
+        </footer>
+    }
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

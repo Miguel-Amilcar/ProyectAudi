@@ -1,0 +1,26 @@
+﻿@model ProyectAudi.Modelspartial.VerificarMfaViewModel
+
+<div class="mfa-card">
+    <div class="mfa-form">
+        <h2>Autenticación en dos pasos</h2>
+
+        <form asp-action="ValidarMFA" method="post">
+            <div class="form-group">
+                <label asp-for="CodigoMFA">Código MFA</label>
+                <input asp-for="CodigoMFA" type="number" />
+                <span asp-validation-for="CodigoMFA" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="RecordarDispositivo" class="form-check-input" />
+                <label asp-for="RecordarDispositivo" class="form-check-label">Recordar este dispositivo</label>
+            </div>
+
+            <button type="submit">Ingresar</button>
+
+            <p class="mt-3">
+                ¿No tienes acceso a tu app de autenticación? <a href="#">Usa un código de recuperación</a>
+            </p>
+        </form>
+    </div>
+</div>

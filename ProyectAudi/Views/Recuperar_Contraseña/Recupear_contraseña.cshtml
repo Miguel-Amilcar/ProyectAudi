@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Recuperación de contraseña";
+}
+
+<h2>Recuperación de contraseña</h2>
+
+<p>Ingresa el correo electrónico con el que te registraste. Te enviaremos un token para restablecer tu contraseña.</p>
+
+<form asp-action="GenerateResetToken" method="post">
+    <div class="form-group">
+        <label for="email">Correo electrónico</label>
+        <input type="email" class="form-control" id="email" name="email" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Confirmar</button>
+</form>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger mt-3">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
