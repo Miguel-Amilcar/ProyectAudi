@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ProyectAudi.Models;
 
-[Index("USUARIO_CORREO", Name = "UQ__USUARIO__2760835EA60D8CBC", IsUnique = true)]
-[Index("CUI", Name = "UQ__USUARIO__C1F8BFD0B6C69FB1", IsUnique = true)]
+[Index(nameof(USUARIO_CORREO), IsUnique = true)]
+[Index(nameof(CUI), IsUnique = true)]
 public partial class USUARIO
 {
     [Key]
@@ -17,7 +17,7 @@ public partial class USUARIO
     [Unicode(false)]
     public string? CUI { get; set; }
 
-    [StringLength(50)]
+    [Required, StringLength(50)]
     public string PRIMERNOMBRE { get; set; } = null!;
 
     [StringLength(50)]
@@ -26,7 +26,7 @@ public partial class USUARIO
     [StringLength(50)]
     public string? TERCERNOMBRE { get; set; }
 
-    [StringLength(50)]
+    [Required, StringLength(50)]
     public string PRIMERAPELLIDO { get; set; } = null!;
 
     [StringLength(50)]
@@ -35,7 +35,8 @@ public partial class USUARIO
     [StringLength(50)]
     public string? APELLIDOCASADA { get; set; }
 
-    public DateOnly? FECHA_NACIMIENTO { get; set; }
+    [Column(TypeName = "date")]
+    public DateTime? FECHA_NACIMIENTO { get; set; }
 
     [StringLength(20)]
     [Unicode(false)]
@@ -63,14 +64,15 @@ public partial class USUARIO
 
     public byte[]? DPI_PDF { get; set; }
 
-    [StringLength(150)]
+    [Required, StringLength(150)]
     public string USUARIO_CORREO { get; set; } = null!;
 
+    [Range(0, 2)]
     public byte ESTADO_TINY { get; set; }
 
     public int ROL_ID { get; set; }
 
-    [StringLength(50)]
+    [Required, StringLength(50)]
     [Unicode(false)]
     public string CREADO_POR { get; set; } = null!;
 
@@ -93,15 +95,14 @@ public partial class USUARIO
     [Column(TypeName = "datetime")]
     public DateTime? FECHA_ELIMINACION { get; set; }
 
-    [InverseProperty("USUARIO")]
+    // Relaciones
+
+    [ForeignKey(nameof(ROL_ID))]
+    public virtual ROL ROL { get; set; } = null!;
+
+    public virtual CREDENCIAL CREDENCIAL { get; set; } = null!;
+
     public virtual ICollection<BITACORA_ENCABEZADO> BITACORA_ENCABEZADOUSUARIO { get; set; } = new List<BITACORA_ENCABEZADO>();
 
-    [InverseProperty("USUARIO_AFECTADO")]
     public virtual ICollection<BITACORA_ENCABEZADO> BITACORA_ENCABEZADOUSUARIO_AFECTADO { get; set; } = new List<BITACORA_ENCABEZADO>();
-
-    [InverseProperty("USUARIO")]
-    public virtual ICollection<CREDENCIAL> CREDENCIAL { get; set; } = new List<CREDENCIAL>();
-
-    [InverseProperty("USUARIO")]
-    public virtual ICollection<ROL> ROL { get; set; } = new List<ROL>();
 }

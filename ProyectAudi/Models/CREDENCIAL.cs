@@ -12,14 +12,14 @@ public partial class CREDENCIAL
     [Key]
     public int CREDENCIAL_ID { get; set; }
 
-    [StringLength(50)]
+    [Required, StringLength(50)]
     [Unicode(false)]
     public string USUARIO_NOMBRE { get; set; } = null!;
 
-    [MaxLength(128)]
+    [Required, MaxLength(128)]
     public byte[] USUARIO_CONTRASENA_HASH { get; set; } = null!;
 
-    [MaxLength(64)]
+    [Required, MaxLength(64)]
     public byte[] USUARIO_SALT { get; set; } = null!;
 
     [Column(TypeName = "datetime")]
@@ -44,12 +44,10 @@ public partial class CREDENCIAL
     [Column(TypeName = "datetime")]
     public DateTime? MFA_ULTIMO_USO { get; set; }
 
+    [Required]
     public int USUARIO_ID { get; set; }
 
-    [InverseProperty("CREDENCIAL")]
-    public virtual ICollection<RECUPERACION_CONTRASENA> RECUPERACION_CONTRASENA { get; set; } = new List<RECUPERACION_CONTRASENA>();
-
-    [ForeignKey("USUARIO_ID")]
-    [InverseProperty("CREDENCIAL")]
+    [ForeignKey(nameof(USUARIO_ID))]
+    [InverseProperty(nameof(USUARIO.CREDENCIAL))]
     public virtual USUARIO USUARIO { get; set; } = null!;
 }

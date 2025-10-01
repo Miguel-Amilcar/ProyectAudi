@@ -51,6 +51,8 @@ public partial class ROL
     public virtual ICollection<PERMISO> PERMISO { get; set; } = new List<PERMISO>();
 
     [ForeignKey("USUARIO_ID")]
-    [InverseProperty("ROL")]
-    public virtual USUARIO USUARIO { get; set; } = null!;
+    public virtual ICollection<USUARIO> USUARIOS { get; set; } = new List<USUARIO>();
+
+
+
 }
