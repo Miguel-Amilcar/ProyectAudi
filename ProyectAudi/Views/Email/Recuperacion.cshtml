@@ -1,0 +1,34 @@
+﻿@model string
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Recuperación de contraseña</title>
+</head>
+<body style="background-color: #f4f7fc; font-family: 'Segoe UI', sans-serif; color: #1f2d5a; padding: 40px;">
+    <div style="background-color: #ffffff; border-radius: 18px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); padding: 40px; max-width: 540px; margin: auto; border: 1px solid #dbe3f0;">
+        <h2 style="color: #2a4d8f; margin-bottom: 28px; text-align: center; font-size: 1.9rem;">🔐 Recuperación de contraseña</h2>
+
+        <p style="font-size: 1rem; margin-bottom: 14px;">Hola,</p>
+        <p style="font-size: 1rem; margin-bottom: 22px;">
+            Recibimos una solicitud para recuperar tu acceso. Usa el siguiente código:
+        </p>
+
+        <div style="font-size: 2.2rem; font-weight: bold; color: #1f2d5a; background-color: #eaf0ff; padding: 16px 32px; border-radius: 12px; text-align: center; letter-spacing: 3px; margin-bottom: 32px; border: 2px dashed #2a4d8f;">
+            @Model
+        </div>
+
+        <p style="font-size: 0.95rem; color: #555; text-align: center; margin-bottom: 8px;">
+            Este código expira en <strong>30 minutos</strong>.
+        </p>
+        <p style="font-size: 0.95rem; color: #555; text-align: center; margin-bottom: 32px;">
+            Si no solicitaste este código, puedes ignorar este mensaje.
+        </p>
+
+        <p style="font-size: 0.9rem; color: #777; text-align: center;">
+            — Equipo de Soporte <strong>ProyectAudi</strong>
+        </p>
+    </div>
+</body>
+</html>

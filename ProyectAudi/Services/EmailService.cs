@@ -2,6 +2,8 @@
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using ProyectAudi.Services;
+
 
 public class EmailService
 {
@@ -11,9 +13,13 @@ public class EmailService
     {
         _config = config;
     }
-
     public async Task EnviarTokenAsync(string destinatario, string token)
     {
+        // Renderiza la plantilla Razor con el token
+        var renderer = new RazorViewRenderer();
+        var htmlBody = await renderer.RenderAsync("Email/Recuperacion.cshtml", token);
+
+        // Configura el cliente SMTP
         var settings = _config.GetSection("EmailSettings");
         var smtp = new SmtpClient(settings["Host"], int.Parse(settings["Port"]))
         {
@@ -21,15 +27,19 @@ public class EmailService
             EnableSsl = bool.Parse(settings["EnableSsl"])
         };
 
+        // Construye el mensaje
         var mensaje = new MailMessage
         {
             From = new MailAddress(settings["User"], "Soporte ProyectAudi"),
             Subject = "Tu token de recuperación",
-            Body = $"Tu código de recuperación es: {token}\nEste código expira en 30 minutos.",
-            IsBodyHtml = false
+            Body = htmlBody,
+            IsBodyHtml = true
         };
 
         mensaje.To.Add(destinatario);
+
+        // Envía el correo
         await smtp.SendMailAsync(mensaje);
     }
+
 }
