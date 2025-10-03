@@ -1,4 +1,8 @@
 ﻿@model ProyectAudi.Modelspartial.ActivarMfaViewModel
+@{
+    ViewData["OcultarHeader"] = true;
+}
+
 
 <div class="mfa-card">
     <div class="mfa-form">
@@ -25,3 +29,9 @@
         </form>
     </div>
 </div>
+@section Scripts {
+    @{
+        <script src="~/js/limpiarFormulario.js"></script>
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -3,38 +3,33 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
-namespace ProyectAudi.Services
+public class EmailService
 {
-    public class EmailService : IEmailService
+    private readonly IConfiguration _config;
+
+    public EmailService(IConfiguration config)
     {
-        private readonly IConfiguration _config;
+        _config = config;
+    }
 
-        public EmailService(IConfiguration config)
+    public async Task EnviarTokenAsync(string destinatario, string token)
+    {
+        var settings = _config.GetSection("EmailSettings");
+        var smtp = new SmtpClient(settings["Host"], int.Parse(settings["Port"]))
         {
-            _config = config;
-        }
+            Credentials = new NetworkCredential(settings["User"], settings["Password"]),
+            EnableSsl = bool.Parse(settings["EnableSsl"])
+        };
 
-        public async Task SendAsync(string to, string subject, string body)
+        var mensaje = new MailMessage
         {
-            var smtpClient = new SmtpClient(_config["EmailSettings:SmtpServer"])
-            {
-                Port = int.Parse(_config["EmailSettings:Port"]),
-                Credentials = new NetworkCredential(
-                    _config["EmailSettings:SenderEmail"],
-                    _config["EmailSettings:SenderPassword"]),
-                EnableSsl = true
-            };
+            From = new MailAddress(settings["User"], "Soporte ProyectAudi"),
+            Subject = "Tu token de recuperación",
+            Body = $"Tu código de recuperación es: {token}\nEste código expira en 30 minutos.",
+            IsBodyHtml = false
+        };
 
-            var mailMessage = new MailMessage
-            {
-                From = new MailAddress(_config["EmailSettings:SenderEmail"]),
-                Subject = subject,
-                Body = body,
-                IsBodyHtml = false
-            };
-
-            mailMessage.To.Add(to);
-            await smtpClient.SendMailAsync(mailMessage);
-        }
+        mensaje.To.Add(destinatario);
+        await smtp.SendMailAsync(mensaje);
     }
 }

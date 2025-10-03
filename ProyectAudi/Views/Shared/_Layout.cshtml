@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    @if (!(ViewContext.RouteData.Values["Controller"]?.ToString() == "Credenciales"))
+    @if (!(ViewData["OcultarHeader"] as bool? == true))
     {
         <header>
             <nav class="navbar navbar-light bg-white border-bottom shadow-sm mb-3 px-4">
@@ -16,6 +16,7 @@
             </nav>
         </header>
     }
+
 
     <main class="main-wrapper">
         @RenderBody()

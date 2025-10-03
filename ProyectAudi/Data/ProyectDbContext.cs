@@ -133,6 +133,7 @@ namespace ProyectAudi.Data
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+        public DbSet<ProyectAudi.Models.TOKEN_RECUPERACION> TOKEN_RECUPERACION { get; set; } = default!;
 
 
     }

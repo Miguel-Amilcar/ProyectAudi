@@ -105,4 +105,7 @@ public partial class USUARIO
     public virtual ICollection<BITACORA_ENCABEZADO> BITACORA_ENCABEZADOUSUARIO { get; set; } = new List<BITACORA_ENCABEZADO>();
 
     public virtual ICollection<BITACORA_ENCABEZADO> BITACORA_ENCABEZADOUSUARIO_AFECTADO { get; set; } = new List<BITACORA_ENCABEZADO>();
+
+    public virtual TOKEN_RECUPERACION TOKEN_RECUPERACION { get; set; } = null!;
+
 }
