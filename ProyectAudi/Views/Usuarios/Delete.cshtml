@@ -117,17 +117,14 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.USUARIO_CORREO)
         </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.USUARIO_CORREO)
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.ESTADO_TINY)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ESTADO_TINY)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ROL_ID)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ROL_ID)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CREADO_POR)
@@ -170,6 +167,12 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.FECHA_ELIMINACION)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ROL)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ROL.ROL_ID)
         </dd>
     </dl>
     

@@ -1,0 +1,40 @@
+﻿@* Parcial HEADER — se renderiza desde _Layout *@
+@{
+    Layout = null;
+
+    // (Opcional) Datos que puedes pasar por ViewBag desde tus acciones
+    // ViewBag.UsuarioNombre = "Batman"; ViewBag.MFA_Activo = true;
+    var usuarioNombre = (ViewBag.UsuarioNombre as string) ?? (User?.Identity?.Name ?? "Usuario");
+    var mfaActivo = ViewBag.MFA_Activo as bool? ?? false;
+}
+<header class="dashboard-header" role="banner" aria-label="Encabezado">
+    <!-- Botón hamburguesa (lo usa el JS del Layout para abrir/cerrar el sidebar) -->
+    <button id="btnSidebar" class="btn btn-sm btn-outline-light" type="button"
+            aria-label="Alternar menú lateral" title="Alternar menú">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <!-- Marca -->
+    <div class="brand">
+        <i class="bi bi-shield-lock"></i>
+        <span>ProyectoAudi</span>
+    </div>
+
+    <!-- Zona derecha (opcional) -->
+    <div class="d-flex align-items-center gap-2">
+        @if (mfaActivo)
+        {
+            <span class="badge text-bg-success">MFA activo</span>
+        }
+        else
+        {
+            <a class="btn btn-warning btn-sm" asp-controller="Credenciales" asp-action="ActivarMFA">
+                Activar MFA
+            </a>
+        }
+
+        <div class="vr d-none d-md-block"></div>
+        <i class="bi bi-person-circle"></i>
+        <span class="d-none d-sm-inline">@usuarioNombre</span>
+    </div>
+</header>

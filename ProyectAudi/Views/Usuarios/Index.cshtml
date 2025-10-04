@@ -73,9 +73,6 @@
                 @Html.DisplayNameFor(model => model.ESTADO_TINY)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ROL_ID)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.CREADO_POR)
             </th>
             <th>
@@ -95,6 +92,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FECHA_ELIMINACION)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ROL)
             </th>
             <th></th>
         </tr>
@@ -157,9 +157,6 @@
                 @Html.DisplayFor(modelItem => item.ESTADO_TINY)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ROL_ID)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.CREADO_POR)
             </td>
             <td>
@@ -179,6 +176,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FECHA_ELIMINACION)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ROL.ROL_ID)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.USUARIO_ID">Edit</a> |

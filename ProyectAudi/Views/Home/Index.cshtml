@@ -1,50 +1,13 @@
-﻿@model ProyectAudi.Modelspartial.HomeViewModel
-@{
+﻿@{
     ViewData["Title"] = "Inicio";
 }
 
-<div class="home-wrapper">
-    <div class="home-card">
-        <div class="home-illustration">
-            <img src="~/images/home-illustration.png" alt="Ilustración de seguridad" />
-        </div>
-
-        <div class="home-content">
-            <h1>Hola, @Model.UsuarioNombre</h1>
-            <p class="lead">Bienvenido a <strong>ProyectoAudi</strong>, tu espacio seguro para gestionar credenciales y autenticación multifactor.</p>
-
-            <div class="mfa-status">
-                @if (!Model.MFA_Activo)
-                {
-                    <a class="btn btn-warning" asp-controller="Credenciales" asp-action="ActivarMFA">
-                        Activar MFA
-                    </a>
-                }
-                else
-                {
-                    <span class="badge bg-success">MFA activo</span>
-                }
-            </div>
-
-            <div class="home-actions mt-4">
-                <a class="btn btn-primary" asp-controller="Credenciales" asp-action="ActivarMFA">Configurar seguridad</a>
-                <a class="btn btn-outline-secondary ms-2" asp-controller="Credenciales" asp-action="Principal">Ir al panel principal</a>
-            </div>
-
-            <div class="home-features mt-5">
-                <div class="feature">
-                    <h4>Seguridad</h4>
-                    <p>Activa MFA para proteger tu cuenta contra accesos no autorizados.</p>
-                </div>
-                <div class="feature">
-                    <h4>Trazabilidad</h4>
-                    <p>Registra cada intento de acceso y mantén control total.</p>
-                </div>
-                <div class="feature">
-                    <h4>Configuración</h4>
-                    <p>Personaliza tu experiencia y gestiona tus dispositivos recordados.</p>
-                </div>
-            </div>
-        </div>
+<div class="dashboard-card">
+    <div class="d-flex align-items-center gap-2 mb-2">
+        <i class="bi bi-info-circle"></i>
+        <strong>Bienvenido a Audi.</strong>
     </div>
+    <p class="mb-0">
+        En este espacio podrás gestionar los usuarios y los permisos, actualmente en desarrollooooo.
+    </p>
 </div>

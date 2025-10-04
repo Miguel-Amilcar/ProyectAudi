@@ -1,35 +1,92 @@
-﻿<!DOCTYPE html>
+﻿@* /Views/Shared/_Layout.cshtml *@
+<!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- ======= META BÁSICOS ======= -->
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @* Si más adelante quieres mejor responsividad en móviles, descomenta:
+       <meta name="viewport" content="width=device-width, initial-scale=1" /> *@
+
+    <!-- ======= TÍTULO DINÁMICO ======= -->
     <title>@ViewData["Title"] - ProyectoAudi</title>
+
+    <!-- ======= CSS GLOBAL ======= -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+
+    <!-- (OPCIONAL) Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- ======= SECCIÓN DE ESTILOS POR VISTA ======= -->
+    @RenderSection("Styles", required: false)
+
+    @* (OPCIONAL) Meta extras por vista
+       @RenderSection("HeadMeta", required: false) *@
 </head>
+
 <body>
-    @if (!(ViewContext.RouteData.Values["Controller"]?.ToString() == "Credenciales"))
-    {
-        <header>
-            <nav class="navbar navbar-light bg-white border-bottom shadow-sm mb-3 px-4">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">ProyectoAudi</a>
-            </nav>
-        </header>
+    @{
+        // Controlador actual (para decidir si mostramos el chrome)
+        var currentController = (ViewContext.RouteData.Values["Controller"]?.ToString() ?? "");
+        bool ocultarChrome = string.Equals(currentController, "Credenciales", System.StringComparison.OrdinalIgnoreCase)
+        || (ViewBag.HideChrome as bool? ?? false);
     }
 
-    <main class="main-wrapper">
-        @RenderBody()
-    </main>
-
-    @if (!(ViewContext.RouteData.Values["Controller"]?.ToString() == "Credenciales"))
+    @if (ocultarChrome)
     {
-        <footer class="footer text-muted text-center py-3">
-            &copy; 2025 - ProyectoAudi - <a asp-controller="Home" asp-action="Privacy">Privacidad</a>
-        </footer>
+        <!-- ======= Vista LIMPIA (sin header ni sidebar) ======= -->
+        <main class="main-wrapper" role="main">
+            @RenderBody()
+        </main>
+    }
+    else
+    {
+        <!-- ======= Shell GLOBAL (header + sidebar + main) ======= -->
+        <div class="page-home">
+            <div class="dashboard-shell">
+                @* Parciales en Views/Shared *@
+                @await Html.PartialAsync("header")
+                @await Html.PartialAsync("sidebar")
+
+                <!-- Contenido principal de cada vista -->
+                <main class="dashboard-main" role="main">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
     }
 
+    <!-- ======= SCRIPTS GLOBALES ======= -->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Toggle del sidebar (botón hamburguesa del header) -->
+    <script>
+        (function(){
+            const btn = document.getElementById('btnSidebar');
+
+            function toggleSidebar(){
+                if (window.matchMedia('(max-width: 992px)').matches) {
+                    document.body.classList.toggle('sidebar-open');      // mobile: abre/cierra
+                } else {
+                    document.body.classList.toggle('sidebar-collapsed'); // desktop: colapsa/expande
+                }
+            }
+            btn && btn.addEventListener('click', toggleSidebar);
+
+            // Cerrar sidebar móvil al hacer click fuera
+            document.addEventListener('click', function(ev){
+                if (!document.body.classList.contains('sidebar-open')) return;
+                const sidebar = document.getElementById('sidebar');
+                const isInsideSidebar = sidebar && sidebar.contains(ev.target);
+                const isButton = btn && btn.contains(ev.target);
+                if (!isInsideSidebar && !isButton) document.body.classList.remove('sidebar-open');
+            });
+        })();
+    </script>
+
+    <!-- ======= SECCIÓN DE SCRIPTS POR VISTA ======= -->
     @RenderSection("Scripts", required: false)
 </body>
 </html>
