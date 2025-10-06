@@ -43,6 +43,17 @@ public class USUARIO
     [MaxLength(50)] public string? ELIMINADO_POR { get; set; }
     public DateTime? FECHA_ELIMINACION { get; set; }
 
-    // 1:1 con CREDENCIAL
-    public CREDENCIAL? CREDENCIAL { get; set; }
+    // Relaciones
+
+    [ForeignKey(nameof(ROL_ID))]
+    public virtual ROL ROL { get; set; } = null!;
+
+    public virtual CREDENCIAL CREDENCIAL { get; set; } = null!;
+
+    public virtual ICollection<BITACORA_ENCABEZADO> BITACORA_ENCABEZADOUSUARIO { get; set; } = new List<BITACORA_ENCABEZADO>();
+
+    public virtual ICollection<BITACORA_ENCABEZADO> BITACORA_ENCABEZADOUSUARIO_AFECTADO { get; set; } = new List<BITACORA_ENCABEZADO>();
+
+    public virtual TOKEN_RECUPERACION TOKEN_RECUPERACION { get; set; } = null!;
+
 }

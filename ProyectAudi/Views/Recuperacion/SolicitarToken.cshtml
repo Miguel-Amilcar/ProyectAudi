@@ -1,0 +1,38 @@
+﻿@model ProyectAudi.Modelspartial.SolicitarTokenViewModel
+@{
+    ViewData["Title"] = "Recuperar contraseña";
+    ViewData["OcultarHeader"] = true;
+}
+
+<div class="main-wrapper">
+    <div class="login-card">
+        <div class="login-image">
+            <img src="~/img/Recuperar_contrasena.png" alt="Recuperación" />
+        </div>
+
+        <div class="login-form">
+            <h2>Recuperar contraseña</h2>
+
+            <form asp-action="EnviarToken" method="post">
+                <div class="form-group">
+                    <label for="Correo">Correo electrónico</label>
+                    <input asp-for="Correo" class="form-control" placeholder="Ingresa tu correo electrónico" autocomplete="off" />
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Enviar token al correo</button>
+            </form>
+
+            <div class="mt-3 text-center">
+                <a asp-controller="Credenciales" asp-action="Index" >Volver al inicio de sesión</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        <script src="~/js/limpiarFormulario.js"></script>
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

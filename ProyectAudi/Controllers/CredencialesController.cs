@@ -40,12 +40,19 @@ namespace ProyectAudi.Controllers
             var credencial = await _context.CREDENCIAL
                 .FirstOrDefaultAsync(c => c.USUARIO_NOMBRE == model.Usuario);
 
-            if (credencial == null || !ValidarPassword(model.Contrasena, credencial))
+            if (credencial == null)
             {
-                ModelState.AddModelError("", "Usuario o contraseña incorrectos.");
+                ModelState.AddModelError(nameof(model.Usuario), "El usuario no existe.");
                 return View(model);
             }
 
+            if (!ValidarPassword(model.Contrasena, credencial))
+            {
+                ModelState.AddModelError(nameof(model.Contrasena), "La contraseña es incorrecta.");
+                return View(model);
+            }
+
+            // ✅ Solo aquí es seguro usar credencial
             HttpContext.Session.SetString("UsuarioNombre", credencial.USUARIO_NOMBRE);
             HttpContext.Session.SetInt32("UsuarioId", credencial.USUARIO_ID);
 
@@ -55,6 +62,7 @@ namespace ProyectAudi.Controllers
             ViewBag.MFAActivo = true;
             return RedirectToAction("ValidarMFA");
         }
+
 
         // GET: Activar MFA
         [HttpGet]
@@ -128,7 +136,7 @@ namespace ProyectAudi.Controllers
             var totp = new Totp(Base32Encoding.ToBytes(credencial.MFA_SECRET_BASE32));
             if (!totp.VerifyTotp(model.CodigoMFA, out _, VerificationWindow.RfcSpecifiedNetworkDelay))
             {
-                ModelState.AddModelError("", "Código MFA inválido.");
+                ModelState.AddModelError(string.Empty, "El código MFA ingresado no es válido.");
                 return View(model);
             }
 
@@ -160,8 +168,10 @@ namespace ProyectAudi.Controllers
         private static bool ValidarPassword(string password, CREDENCIAL credencial)
         {
             var combinado = Encoding.UTF8.GetBytes(password).Concat(credencial.USUARIO_SALT).ToArray();
-            var hash = SHA256.HashData(combinado);
+            using var sha = SHA512.Create();
+            var hash = sha.ComputeHash(combinado);
             return hash.SequenceEqual(credencial.USUARIO_CONTRASENA_HASH);
         }
+
     }
 }

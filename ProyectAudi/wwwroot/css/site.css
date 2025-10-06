@@ -45,7 +45,7 @@ body {
     .login-image img,
     .mfa-image img,
     .home-illustration img {
-        max-width: 100%;
+        max-width: 180px;
         height: auto;
         border-radius: 8px;
     }
@@ -193,3 +193,5 @@ button,
         text-decoration: underline;
         color: #1a3a72;
     }
+
+

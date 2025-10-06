@@ -9,8 +9,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ProyectDbContext>(options =>
 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddTransient<EmailService>();
 
-builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddSession(options =>
 {
