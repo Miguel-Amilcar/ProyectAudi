@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.EntityFrameworkCore;
 using ProyectAudi.Data;
 using ProyectAudi.Services;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +24,28 @@ builder.Services.AddSession(options =>
 });
 
 
+var supportedCultures = new[] { new CultureInfo("es-ES") };
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("es-ES"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+};
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Credenciales/Index"; // ruta al login
+        options.AccessDeniedPath = "/Credenciales/AccesoDenegado"; // opcional
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // duración de la sesión
+    });
 
 var app = builder.Build();
+app.UseAuthentication();
+app.UseAuthorization();
+
+
+
 
 // Middleware
 if (!app.Environment.IsDevelopment())
@@ -32,6 +55,8 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseRequestLocalization(localizationOptions);
+
 
 app.UseSession(); // ✅ necesario para HttpContext.Session
 app.UseAuthorization();

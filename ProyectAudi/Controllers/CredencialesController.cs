@@ -9,6 +9,9 @@ using QRCoder;
 using System.Security.Cryptography;
 using System.Text;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace ProyectAudi.Controllers
 {
@@ -142,6 +145,16 @@ namespace ProyectAudi.Controllers
 
             credencial.MFA_ULTIMO_USO = DateTime.Now;
             await _context.SaveChangesAsync();
+            var claims = new List<Claim>
+{
+             new Claim(ClaimTypes.Name, credencial.USUARIO_NOMBRE),
+             new Claim("UsuarioId", credencial.USUARIO_ID.ToString()),
+};
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
             return RedirectToAction("Index", "Home");
 

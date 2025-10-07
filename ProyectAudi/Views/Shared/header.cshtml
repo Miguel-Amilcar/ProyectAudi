@@ -1,0 +1,25 @@
+﻿@* Parcial HEADER — se renderiza desde _Layout *@
+@{
+    Layout = null;
+    var nombre = User.FindFirst("NombreCompleto")?.Value ?? User.Identity.Name ?? "Usuario";
+}
+<header class="dashboard-header" role="banner" aria-label="Encabezado">
+    <!-- Botón hamburguesa (lo usa el JS del Layout para abrir/cerrar el sidebar) -->
+    <button id="btnSidebar" class="btn btn-sm btn-outline-light" type="button"
+            aria-label="Alternar menú lateral" title="Alternar menú">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <!-- Marca -->
+    <div class="brand">
+        <i class="bi bi-shield-lock"></i>
+        <span>ProyectoAudi</span>
+    </div>
+
+    <!-- Zona derecha (opcional) -->
+    <div class="d-flex align-items-center gap-2">
+        <div class="vr d-none d-md-block"></div>
+        <i class="bi bi-person-circle"></i>
+        <span class="usuario-saludo">Hola, @(ViewBag.UsuarioNombre ?? User.Identity.Name ?? "Usuario")</span>
+    </div>
+</header>

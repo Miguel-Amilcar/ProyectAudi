@@ -1,0 +1,131 @@
+﻿/*<!--=========================
+ESTILOS AISLADOS (NAMESPACE .page-home)
+========================= -->*/
+
+.page-home .dashboard-shell {
+    position: fixed; /* ignora padding/m�rgenes del contenido del layout */
+    inset: 0; /* top/right/bottom/left = 0 -> cubre viewport completo */
+    display: grid;
+    grid-template-rows: 64px 1fr; /* header + contenido */
+    grid-template-columns: 260px 1fr; /* sidebar + main */
+    grid-template-areas:
+        "header header"
+        "sidebar main";
+    background: var(--bs-body-bg, #fff);
+}
+
+/* ===== Header ===== */
+.page-home .dashboard-header {
+    grid-area: header;
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    align-items: center;
+    background: #2a4d8f;
+    color: #fff;
+    padding: 0 16px;
+    border-bottom: 1px solid rgba(0,0,0,.1);
+    z-index: 1;
+}
+
+    .page-home .dashboard-header .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        letter-spacing: .2px;
+        padding-left: 20px;
+    }
+
+/* ===== Sidebar ===== */
+.page-home .dashboard-sidebar {
+    grid-area: sidebar;
+    border-right: 1px solid rgba(0,0,0,.1);
+    background: #fff;
+    padding: 10px 8px;
+    overflow-y: auto;
+}
+
+    .page-home .dashboard-sidebar .sidebar-title {
+        font-size: .85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        opacity: .7;
+        padding: 8px 10px;
+        letter-spacing: .04em;
+    }
+
+    .page-home .dashboard-sidebar nav .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #333;
+    }
+
+        .page-home .dashboard-sidebar nav .nav-item:hover {
+            background: #f1f3f9;
+        }
+
+        .page-home .dashboard-sidebar nav .nav-item.is-active {
+            background: #e7f1ff;
+            color: #0d6efd;
+            border: 1px solid #b6d4fe;
+        }
+
+    .page-home .dashboard-sidebar i {
+        font-size: 1.1rem;
+        width: 22px;
+        text-align: center;
+    }
+
+/* ===== Main ===== */
+.page-home .dashboard-main {
+    grid-area: main;
+    padding: 18px;
+    overflow: auto;
+    background: #fff;
+}
+
+.page-home .dashboard-card {
+    border: 1px dashed #cfd6e4;
+    border-radius: 12px;
+    padding: 20px;
+    background: #fafafa;
+}
+
+/* ===== Colapso (desktop) ===== */
+body.sidebar-collapsed .page-home .dashboard-shell {
+    grid-template-columns: 72px 1fr;
+}
+
+body.sidebar-collapsed .page-home .dashboard-sidebar .sidebar-title {
+    display: none;
+}
+
+body.sidebar-collapsed .page-home .dashboard-sidebar .nav-item span {
+    display: none;
+}
+
+body.sidebar-collapsed .page-home .dashboard-sidebar {
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+/* ===== Mobile: sidebar oculto, toggle con bot�n ===== */
+@media (max-width: 992px) {
+    .page-home .dashboard-shell {
+        grid-template-columns: 0 1fr;
+    }
+
+    body.sidebar-open .page-home .dashboard-shell {
+        grid-template-columns: 260px 1fr;
+    }
+}
+
+/* Accesibilidad: foco visible */
+.page-home .dashboard-sidebar .nav-item:focus {
+    outline: 3px solid #0d6efd;
+    outline-offset: 2px;
+}

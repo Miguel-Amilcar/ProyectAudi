@@ -1,0 +1,50 @@
+﻿@* Parcial SIDEBAR — se renderiza desde _Layout *@
+@{
+    Layout = null;
+
+    // Toma el controlador actual para marcar activo
+    var ctrl = (ViewContext.RouteData.Values["controller"]
+                ?? ViewContext.RouteData.Values["Controller"]
+                ?? "").ToString().ToLower();
+}
+@* subido *@
+<aside class="dashboard-sidebar" id="sidebar" role="navigation" aria-label="Navegación principal">
+    <div class="sidebar-title">Módulos</div>
+    <nav class="sidebar-nav">
+        <a asp-controller="Home" asp-action="Index"
+           class="nav-item @(ctrl == "home" ? "is-active" : "")"
+           aria-current="@(ctrl == "home" ? "page" : null)">
+            <i class="bi bi-house-door"></i><span>Inicio</span>
+        </a>
+
+        <a asp-controller="Credenciales" asp-action="Principal"
+           class="nav-item @(ctrl == "credenciales" ? "is-active" : "")"
+           aria-current="@(ctrl == "credenciales" ? "page" : null)">
+            <i class="bi bi-key"></i><span>Credenciales</span>
+        </a>
+
+        <a asp-controller="Auditoria" asp-action="Index"
+           class="nav-item @(ctrl == "auditoria" ? "is-active" : "")"
+           aria-current="@(ctrl == "auditoria" ? "page" : null)">
+            <i class="bi bi-activity"></i><span>Auditoría</span>
+        </a>
+
+        <a asp-controller="Usuarios" asp-action="Index"
+           class="nav-item @(ctrl == "usuarios" ? "is-active" : "")"
+           aria-current="@(ctrl == "usuarios" ? "page" : null)">
+            <i class="bi bi-people"></i><span>Usuarios</span>
+        </a>
+
+        <a asp-controller="Configuracion" asp-action="Index"
+           class="nav-item @(ctrl == "configuracion" ? "is-active" : "")"
+           aria-current="@(ctrl == "configuracion" ? "page" : null)">
+            <i class="bi bi-gear"></i><span>Configuración</span>
+        </a>
+
+        <a asp-controller="Ayuda" asp-action="Index"
+           class="nav-item @(ctrl == "ayuda" ? "is-active" : "")"
+           aria-current="@(ctrl == "ayuda" ? "page" : null)">
+            <i class="bi bi-question-circle"></i><span>Ayuda</span>
+        </a>
+    </nav>
+</aside>

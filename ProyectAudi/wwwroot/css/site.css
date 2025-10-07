@@ -1,7 +1,7 @@
 /* === Base === */
 body {
     margin: 0;
-    background-color: #e6f0fa; /* azul claro suave */
+    background-color: #F4F4F4;
     font-family: 'Segoe UI', sans-serif;
     color: #1f2d5a; /* azul oscuro */
 }
@@ -195,3 +195,12 @@ button,
     }
 
 
+
+/* ===== Saludo del usuario en el header ===== */
+.page-home .dashboard-header .usuario-saludo {
+    font-size: 0.85rem; /* Tamaño reducido */
+    font-weight: 400; /* Menos grueso que el texto por defecto */
+    color: #ccc; /* Tono más suave para no competir con la marca */
+    margin-left: 4px; /* Separación del ícono */
+    white-space: nowrap; /* Evita que se corte en varias líneas */
+}

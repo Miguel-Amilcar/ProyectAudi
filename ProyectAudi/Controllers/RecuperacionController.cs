@@ -34,7 +34,6 @@ namespace ProyectAudi.Controllers
                 TempData["BloqueoRecuperacion"] = "La recuperación está desactivada hasta " + DateTime.Parse(bloqueo).ToString("g");
                 return RedirectToAction("Index", "Credenciales", new { area = "Modelspartial" });
             }
-
             return View();
         }
 
