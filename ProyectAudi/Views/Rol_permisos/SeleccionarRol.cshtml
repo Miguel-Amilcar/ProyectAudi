@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Seleccionar Rol";
+}
+
+<div class="container mt-4">
+    <div class="card permisos-card">
+        <div class="card-header permisos-header">
+            <h4>Seleccione un rol para editar sus permisos</h4>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="EditarPermisos" method="get">
+                <div class="mb-3">
+                    <label for="id" class="form-label">Rol:</label>
+                    <select name="id" class="form-select" asp-items="ViewBag.Roles"></select>
+                </div>
+
+                <div class="botones-permisos">
+                    <button type="submit" class="btn btn-editar">
+                        <i class="bi bi-pencil-square"></i> Editar permisos
+                    </button>
+
+                </div>
+            </form>
+
+            <div id="alerta-rol" class="alert alert-warning alert-dismissible fade d-none mt-3" role="alert">
+                <strong>Atención:</strong> Debe seleccionar un rol para poder editar los permisos.
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/permisos.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/validarSeleccionRol.js"></script>
+}

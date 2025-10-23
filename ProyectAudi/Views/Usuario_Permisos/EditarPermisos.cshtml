@@ -1,0 +1,37 @@
+﻿@model ProyectAudi.ViewModels.UsuarioPermisoViewModel
+
+<h2>Gestión de permisos por usuario</h2>
+
+<div>
+    <p><strong>Nombre completo:</strong> @Model.NombreCompleto</p>
+    <p><strong>Correo:</strong> @Model.Correo</p>
+    <p><strong>Usuario:</strong> @Model.NombreUsuario</p>
+    <p><strong>Rol actual:</strong> @Model.RolNombre</p>
+
+    <form asp-action="ActualizarPermisos" method="post">
+        <input type="hidden" name="UsuarioId" value="@Model.UsuarioId" />
+
+        <label for="RolId">Cambiar rol:</label>
+        <select name="RolId" asp-for="RolId">
+            @foreach (var rol in Model.RolesDisponibles)
+            {
+                <option value="@rol.RolId" selected="@(rol.RolId == Model.RolId)">
+                    @rol.RolNombre
+                </option>
+            }
+        </select>
+
+        <h4>Permisos del rol</h4>
+        @foreach (var permiso in Model.Permisos)
+        {
+            <div>
+                <input type="checkbox" name="Permisos[@permiso.PermisoId].Asignado" value="true" @(permiso.Asignado ? "checked" : "") />
+                <label>@permiso.NombrePermiso</label>
+                <input type="hidden" name="Permisos[@permiso.PermisoId].PermisoId" value="@permiso.PermisoId" />
+                <input type="hidden" name="Permisos[@permiso.PermisoId].NombrePermiso" value="@permiso.NombrePermiso" />
+            </div>
+        }
+
+        <button type="submit">Guardar cambios</button>
+    </form>
+</div>

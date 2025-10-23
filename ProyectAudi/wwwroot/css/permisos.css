@@ -1,0 +1,43 @@
+﻿.permisos-card {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.permisos-header {
+    background-color: #0d6efd;
+    color: white;
+    padding: 1rem;
+}
+
+    .permisos-header h4 {
+        margin: 0;
+        font-weight: 500;
+    }
+
+.permisos-tabla th {
+    background-color: #f8f9fa;
+    text-align: center;
+}
+
+.permisos-tabla td {
+    vertical-align: middle;
+}
+
+.botones-permisos {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn-editar {
+    background-color: #0056b3; /* Azul profundo */
+    color: white;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-editar:hover {
+        background-color: #004494;
+    }

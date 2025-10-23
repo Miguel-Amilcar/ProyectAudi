@@ -1,0 +1,35 @@
+﻿@model ProyectAudi.ViewModels.Permisos.DetailsViewModel
+
+@{
+    ViewData["Title"] = "Detalles del Permiso";
+}
+
+<h2>Detalles del Permiso</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">Nombre</dt>
+        <dd class="col-sm-9">@Model.PERMISO_NOMBRE</dd>
+
+        <dt class="col-sm-3">Descripción</dt>
+        <dd class="col-sm-9">@Model.DESCRIPCION</dd>
+
+        <dt class="col-sm-3">Rol</dt>
+        <dd class="col-sm-9">@Model.ROL_NOMBRE</dd>
+
+        <dt class="col-sm-3">Creado por</dt>
+        <dd class="col-sm-9">@Model.CREADO_POR</dd>
+
+        <dt class="col-sm-3">Fecha creación</dt>
+        <dd class="col-sm-9">@Model.FECHA_CREACION.ToShortDateString()</dd>
+
+        <dt class="col-sm-3">Modificado por</dt>
+        <dd class="col-sm-9">@Model.MODIFICADO_POR</dd>
+
+        <dt class="col-sm-3">Fecha modificación</dt>
+        <dd class="col-sm-9">@Model.FECHA_MODIFICACION?.ToShortDateString()</dd>
+    </dl>
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.PERMISO_ID" class="btn btn-warning">Editar</a>
+<a asp-action="Index" class="btn btn-secondary">Volver</a>

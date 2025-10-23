@@ -17,7 +17,4 @@ public partial class OPERACION
 
     [StringLength(255)]
     public string? DESCRIPCION { get; set; }
-
-    [InverseProperty("OPERACION")]
-    public virtual ICollection<BITACORA_ENCABEZADO> BITACORA_ENCABEZADO { get; set; } = new List<BITACORA_ENCABEZADO>();
 }

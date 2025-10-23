@@ -1,0 +1,34 @@
+﻿@model ProyectAudi.ViewModels.Roles.EditViewModel
+
+@{
+    ViewData["Title"] = "Editar Rol";
+}
+
+<h2>Editar Rol</h2>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="ROL_ID" />
+
+    <div class="form-group">
+        <label asp-for="ROL_NOMBRE"></label>
+        <input asp-for="ROL_NOMBRE" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ROL_DESCRIPCION"></label>
+        <input asp-for="ROL_DESCRIPCION" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ES_ADMINISTRATIVO"></label>
+        <input asp-for="ES_ADMINISTRATIVO" type="checkbox" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ESTADO"></label>
+        <input asp-for="ESTADO" type="checkbox" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Actualizar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

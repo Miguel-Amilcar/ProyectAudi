@@ -1,17 +1,18 @@
-﻿/*<!--=========================
+﻿/*=========================
 ESTILOS AISLADOS (NAMESPACE .page-home)
-========================= -->*/
+=========================*/
 
 .page-home .dashboard-shell {
-    position: fixed; /* ignora padding/m�rgenes del contenido del layout */
-    inset: 0; /* top/right/bottom/left = 0 -> cubre viewport completo */
+    position: relative;
+    inset: 0;
     display: grid;
-    grid-template-rows: 64px 1fr; /* header + contenido */
-    grid-template-columns: 260px 1fr; /* sidebar + main */
+    grid-template-rows: 64px 1fr;
+    grid-template-columns: 260px 1fr;
     grid-template-areas:
         "header header"
         "sidebar main";
     background: var(--bs-body-bg, #fff);
+    min-height: 100vh;
 }
 
 /* ===== Header ===== */
@@ -113,7 +114,7 @@ body.sidebar-collapsed .page-home .dashboard-sidebar {
     padding-right: 6px;
 }
 
-/* ===== Mobile: sidebar oculto, toggle con bot�n ===== */
+/* ===== Mobile: sidebar oculto, toggle con botón ===== */
 @media (max-width: 992px) {
     .page-home .dashboard-shell {
         grid-template-columns: 0 1fr;
@@ -122,10 +123,78 @@ body.sidebar-collapsed .page-home .dashboard-sidebar {
     body.sidebar-open .page-home .dashboard-shell {
         grid-template-columns: 260px 1fr;
     }
+
+    .page-home .dashboard-header {
+        grid-template-columns: 48px 1fr auto;
+        padding: 0 12px;
+    }
+
+    .page-home .dashboard-main {
+        padding: 12px;
+    }
+
+    .page-home .dashboard-card {
+        padding: 16px;
+    }
+
+    .page-home .dashboard-sidebar nav .nav-item {
+        padding: 8px 10px;
+        font-size: 0.95rem;
+    }
 }
 
-/* Accesibilidad: foco visible */
+/* ===== Extra pequeños (teléfonos) ===== */
+@media (max-width: 576px) {
+    .page-home .dashboard-header .brand {
+        font-size: 0.9rem;
+        padding-left: 10px;
+    }
+
+    .page-home .dashboard-sidebar {
+        padding: 6px;
+    }
+
+        .page-home .dashboard-sidebar nav .nav-item {
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+
+    .page-home .dashboard-card {
+        border-radius: 8px;
+    }
+}
+
+/* ===== Accesibilidad ===== */
 .page-home .dashboard-sidebar .nav-item:focus {
     outline: 3px solid #0d6efd;
     outline-offset: 2px;
 }
+
+/* ===== Submenús ===== */
+.submenu {
+    list-style: none;
+    padding-left: 20px;
+    margin-top: 5px;
+    transition: all 0.3s ease;
+}
+
+    .submenu li {
+        margin-bottom: 5px;
+    }
+
+.oculto {
+    display: none;
+}
+
+.submenu-toggle {
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.3s;
+}
+
+    .submenu-toggle:hover {
+        background-color: #f1f3f9;
+    }

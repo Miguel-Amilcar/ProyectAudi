@@ -1,33 +1,28 @@
-﻿@* /Views/Shared/_Layout.cshtml *@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <!-- ======= META BÁSICOS ======= -->
     <meta charset="utf-8" />
-    @* Si más adelante quieres mejor responsividad en móviles, descomenta:
-    <meta name="viewport" content="width=device-width, initial-scale=1" /> *@
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- ======= TÍTULO DINÁMICO ======= -->
     <title>@ViewData["Title"] - ProyectoAudi</title>
 
     <!-- ======= CSS GLOBAL ======= -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
 
-    <!-- (OPCIONAL) Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Bootstrap & Icons desde CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
 
     <!-- ======= SECCIÓN DE ESTILOS POR VISTA ======= -->
     @RenderSection("Styles", required: false)
-
-    @* (OPCIONAL) Meta extras por vista
-    @RenderSection("HeadMeta", required: false) *@
+    @RenderSection("HeadMeta", required: false)
 </head>
 
 <body>
     @{
-        // Controlador actual (para decidir si mostramos el chrome)
         var currentController = (ViewContext.RouteData.Values["Controller"]?.ToString() ?? "");
         bool ocultarChrome = string.Equals(currentController, "Credenciales", System.StringComparison.OrdinalIgnoreCase)
         || (ViewBag.HideChrome as bool? ?? false);
@@ -35,21 +30,19 @@
 
     @if (ocultarChrome)
     {
-        <!-- ======= Vista LIMPIA (sin header ni sidebar) ======= -->
+        <!-- ======= Vista LIMPIA ======= -->
         <main class="main-wrapper" role="main">
             @RenderBody()
         </main>
     }
     else
     {
-        <!-- ======= Shell GLOBAL (header + sidebar + main) ======= -->
+        <!-- ======= Shell GLOBAL ======= -->
         <div class="page-home">
             <div class="dashboard-shell">
-                @* Parciales en Views/Shared *@
                 @await Html.PartialAsync("header")
                 @await Html.PartialAsync("sidebar")
 
-                <!-- Contenido principal de cada vista -->
                 <main class="dashboard-main" role="main">
                     @RenderBody()
                 </main>
@@ -57,25 +50,29 @@
         </div>
     }
 
-    <!-- ======= SCRIPTS GLOBALES ======= -->
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- ======= MODALES GLOBALES (opcional) ======= -->
+    @RenderSection("Modals", required: false)
 
-    <!-- Toggle del sidebar (botón hamburguesa del header) -->
+    <!-- ======= SCRIPTS GLOBALES ======= -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/sidebar.js"></script>
+
+    <!-- Sidebar toggle -->
     <script>
         (function () {
             const btn = document.getElementById('btnSidebar');
 
             function toggleSidebar() {
                 if (window.matchMedia('(max-width: 992px)').matches) {
-                    document.body.classList.toggle('sidebar-open');      // mobile: abre/cierra
+                    document.body.classList.toggle('sidebar-open');
                 } else {
-                    document.body.classList.toggle('sidebar-collapsed'); // desktop: colapsa/expande
+                    document.body.classList.toggle('sidebar-collapsed');
                 }
             }
+
             btn && btn.addEventListener('click', toggleSidebar);
 
-            // Cerrar sidebar móvil al hacer click fuera
             document.addEventListener('click', function (ev) {
                 if (!document.body.classList.contains('sidebar-open')) return;
                 const sidebar = document.getElementById('sidebar');
@@ -86,7 +83,7 @@
         })();
     </script>
 
-    <!-- ======= SECCIÓN DE SCRIPTS POR VISTA ======= -->
+    <!-- ======= SCRIPTS POR VISTA ======= -->
     @RenderSection("Scripts", required: false)
 </body>
 </html>

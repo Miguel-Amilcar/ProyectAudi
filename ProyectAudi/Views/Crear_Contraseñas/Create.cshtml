@@ -1,0 +1,60 @@
+﻿@model ProyectAudi.ViewModels.Crear_Contraseña.CreateViewModel
+
+@{
+    ViewData["Title"] = "Crear";
+    var permisos = ViewBag.Permisos as HashSet<string> ?? new HashSet<string>();
+}
+
+<h2 class="mb-4 text-primary">
+    <i class="bi bi-plus-circle-fill"></i> Nueva credencial
+</h2>
+
+@if (permisos.Contains("CREAR"))
+{
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body row g-3">
+                <div class="col-md-6">
+                    @Html.LabelFor(m => m.USUARIO_NOMBRE, new { @class = "form-label" })
+                    @Html.TextBoxFor(m => m.USUARIO_NOMBRE, new { @class = "form-control", placeholder = "Ej. admin.admin" })
+                    @Html.ValidationMessageFor(m => m.USUARIO_NOMBRE, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-md-6">
+                    @Html.LabelFor(m => m.PlainPassword, new { @class = "form-label" })
+                    @Html.PasswordFor(m => m.PlainPassword, new { @class = "form-control", placeholder = "Ej. Seguro#545" })
+                    @Html.ValidationMessageFor(m => m.PlainPassword, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-md-12">
+                    @Html.LabelFor(m => m.USUARIO_ID, new { @class = "form-label" })
+                    @Html.DropDownListFor(m => m.USUARIO_ID, ViewBag.Usuarios as List<SelectListItem>, "Seleccione un usuario", new { @class = "form-select" })
+                    @Html.ValidationMessageFor(m => m.USUARIO_ID, "", new { @class = "text-danger" })
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.NombreCompletoUsuario))
+                {
+                    <div class="col-md-12">
+                        <div class="alert alert-info mt-3">
+                            <strong>Asignando credencial a:</strong> @Model.NombreCompletoUsuario
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save2"></i> Crear credencial
+            </button>
+        </div>
+    </form>
+}
+else
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-shield-lock"></i> No tenés permiso para crear credenciales.
+    </div>
+}

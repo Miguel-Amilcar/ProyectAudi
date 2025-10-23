@@ -1,0 +1,50 @@
+﻿@model ProyectAudi.ViewModels.Crear_Contraseña.DetailsViewModel
+@{
+    ViewData["Title"] = "Detalles";
+}
+
+<h2 class="mb-4 text-info">
+    <i class="bi bi-person-badge"></i> Detalles de credencial
+</h2>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-4">ID de credencial</dt>
+            <dd class="col-sm-8">@Model.CREDENCIAL_ID</dd>
+
+            <dt class="col-sm-4">Usuario de inicio de sesión</dt>
+            <dd class="col-sm-8">@Model.USUARIO_NOMBRE</dd>
+
+            <dt class="col-sm-4">ID de usuario</dt>
+            <dd class="col-sm-8">@Model.USUARIO_ID</dd>
+
+            <dt class="col-sm-4">Intentos fallidos</dt>
+            <dd class="col-sm-8">@Model.INTENTOS_FALLIDOS</dd>
+
+            <dt class="col-sm-4">Bloqueado hasta</dt>
+            <dd class="col-sm-8">@Model.BLOQUEADO_HASTA?.ToString("g") ?? "—"</dd>
+
+            <dt class="col-sm-4">Último intento</dt>
+            <dd class="col-sm-8">@Model.FECHA_ULTIMO_INTENTO?.ToString("g") ?? "—"</dd>
+
+            <dt class="col-sm-4">Último cambio de contraseña</dt>
+            <dd class="col-sm-8">@Model.PASSWORD_ULTIMO_CAMBIO?.ToString("g") ?? "—"</dd>
+
+            <dt class="col-sm-4">MFA activo</dt>
+            <dd class="col-sm-8">@Model.MFA_ENABLED</dd>
+
+            <dt class="col-sm-4">Último uso de MFA</dt>
+            <dd class="col-sm-8">@Model.MFA_ULTIMO_USO?.ToString("g") ?? "—"</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="mt-4 d-flex justify-content-between">
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left-circle"></i> Volver al listado
+    </a>
+    <a asp-action="Edit" asp-route-id="@Model.CREDENCIAL_ID" class="btn btn-primary">
+        <i class="bi bi-pencil-square"></i> Editar
+    </a>
+</div>

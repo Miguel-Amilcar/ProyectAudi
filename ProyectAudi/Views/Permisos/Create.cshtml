@@ -1,0 +1,29 @@
+﻿@model ProyectAudi.ViewModels.Permisos.CreateViewModel
+
+@{
+    ViewData["Title"] = "Crear Permiso";
+}
+
+<h2>Crear nuevo Permiso</h2>
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label asp-for="PERMISO_NOMBRE"></label>
+        <input asp-for="PERMISO_NOMBRE" class="form-control" />
+        <span asp-validation-for="PERMISO_NOMBRE" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DESCRIPCION"></label>
+        <input asp-for="DESCRIPCION" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ROL_ID">Rol</label>
+        <select asp-for="ROL_ID" asp-items="ViewBag.ROL_ID" class="form-control"></select>
+        <span asp-validation-for="ROL_ID" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

@@ -3,7 +3,7 @@ body {
     margin: 0;
     background-color: #F4F4F4;
     font-family: 'Segoe UI', sans-serif;
-    color: #1f2d5a; /* azul oscuro */
+    color: #1f2d5a;
 }
 
 .main-wrapper {
@@ -20,7 +20,7 @@ body {
 .home-card {
     background-color: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(209, 217, 230, 0.6); /* gris suave */
+    box-shadow: 0 4px 16px rgba(209, 217, 230, 0.6);
     display: flex;
     overflow: hidden;
     max-width: 1000px;
@@ -194,13 +194,129 @@ button,
         color: #1a3a72;
     }
 
+.table-header-azul {
+    background-color: #0d6efd;
+    color: white;
+}
 
-
-/* ===== Saludo del usuario en el header ===== */
+/* === Header saludo === */
 .page-home .dashboard-header .usuario-saludo {
-    font-size: 0.85rem; /* Tamaño reducido */
-    font-weight: 400; /* Menos grueso que el texto por defecto */
-    color: #ccc; /* Tono más suave para no competir con la marca */
-    margin-left: 4px; /* Separación del ícono */
-    white-space: nowrap; /* Evita que se corte en varias líneas */
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #ccc;
+    margin-left: 4px;
+    white-space: nowrap;
+}
+
+/* === Eliminar usuario / modal === */
+.dashboard-shell,
+.dashboard-main {
+    overflow: visible;
+    position: relative;
+    z-index: auto;
+}
+
+.modal-content {
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+/* === RESPONSIVIDAD GENERAL === */
+@media (max-width: 768px) {
+    .main-wrapper {
+        padding: 20px 10px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .login-card,
+    .mfa-card,
+    .home-card {
+        flex-direction: column;
+        max-width: 100%;
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    .login-image,
+    .mfa-image,
+    .home-illustration {
+        max-width: 100%;
+        min-height: 200px;
+        padding: 20px;
+    }
+
+    .login-form,
+    .mfa-form,
+    .home-content {
+        padding: 20px;
+    }
+
+        .login-form h2,
+        .mfa-form h2,
+        .home-content h1 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .home-content .lead {
+            font-size: 1rem;
+        }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    button,
+    .btn-primary {
+        font-size: 15px;
+        padding: 10px 20px;
+    }
+
+    .home-features {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .feature {
+        padding: 0;
+    }
+
+    .qr-preview img {
+        max-width: 100%;
+    }
+
+    .modal-dialog {
+        margin: 10px;
+    }
+
+    .modal-content {
+        border-radius: 8px;
+    }
+}
+
+/* === EXTRA PEQUEÑOS (teléfonos) === */
+@media (max-width: 480px) {
+    .login-form h2,
+    .mfa-form h2,
+    .home-content h1 {
+        font-size: 1.3rem;
+    }
+
+    .btn,
+    button {
+        font-size: 14px;
+    }
+
+    .dashboard-header .usuario-saludo {
+        display: none;
+    }
 }

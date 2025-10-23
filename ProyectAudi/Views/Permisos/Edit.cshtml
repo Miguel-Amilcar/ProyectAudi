@@ -1,0 +1,29 @@
+﻿@model ProyectAudi.ViewModels.Permisos.EditViewModel
+
+@{
+    ViewData["Title"] = "Editar Permiso";
+}
+
+<h2>Editar Permiso</h2>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="PERMISO_ID" />
+
+    <div class="form-group">
+        <label asp-for="PERMISO_NOMBRE"></label>
+        <input asp-for="PERMISO_NOMBRE" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DESCRIPCION"></label>
+        <input asp-for="DESCRIPCION" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ROL_ID">Rol</label>
+        <select asp-for="ROL_ID" asp-items="ViewBag.ROL_ID" class="form-control"></select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Actualizar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

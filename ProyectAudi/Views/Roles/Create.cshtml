@@ -1,0 +1,69 @@
+﻿@model ProyectAudi.ViewModels.Roles.CreateViewModel
+
+@{
+    ViewData["Title"] = "Crear Rol";
+}
+
+<h2>Crear nuevo Rol</h2>
+
+<!-- Vista previa de valores booleanos solo si el modelo está inicializado -->
+@if (Model != null && Model.ES_ADMINISTRATIVO.HasValue && Model.ESTADO.HasValue)
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Administrativo</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@(Model.ES_ADMINISTRATIVO == true ? "Sí" : "No")</td>
+                <td>@(Model.ESTADO == true ? "Activo" : "Inactivo")</td>
+            </tr>
+        </tbody>
+    </table>
+}
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="ROL_NOMBRE"></label>
+        <input asp-for="ROL_NOMBRE" class="form-control" />
+        <span asp-validation-for="ROL_NOMBRE" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ROL_DESCRIPCION"></label>
+        <textarea asp-for="ROL_DESCRIPCION" class="form-control"></textarea>
+        <span asp-validation-for="ROL_DESCRIPCION" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ES_ADMINISTRATIVO">¿Es administrativo?</label>
+        <select asp-for="ES_ADMINISTRATIVO" class="form-control" required>
+            <option value="">-- Selecciona una opción --</option>
+            <option value="true">Sí</option>
+            <option value="false">No</option>
+        </select>
+        <span asp-validation-for="ES_ADMINISTRATIVO" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ESTADO">Estado</label>
+        <select asp-for="ESTADO" class="form-control" required>
+            <option value="">-- Selecciona estado --</option>
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
+        </select>
+        <span asp-validation-for="ESTADO" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

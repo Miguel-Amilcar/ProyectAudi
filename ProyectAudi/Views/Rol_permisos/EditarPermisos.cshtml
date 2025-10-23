@@ -1,0 +1,61 @@
+﻿@model ProyectAudi.ViewModels.RolPermisoViewModel
+
+@{
+    ViewData["Title"] = "Editar permisos";
+}
+
+<div class="container mt-4">
+    <div class="card permisos-card">
+        <div class="card-header permisos-header">
+            <h4>Permisos asignados al rol: <strong>@Model.RolNombre</strong> @* <span>(ID: @Model.RolId)</span> *@</h4>
+        </div>
+
+        <div class="card-body">
+            @if (TempData["Mensaje"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["Mensaje"]
+                </div>
+            }
+
+            <form asp-action="EditarPermisos" method="post">
+                <input type="hidden" asp-for="RolId" />
+
+                <table class="table table-hover table-bordered align-middle permisos-tabla">
+                    <thead>
+                        <tr>
+                            <th>Permiso</th>
+                            <th>Asignado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Permisos.Count; i++)
+                        {
+                            <tr>
+                                <td>@Model.Permisos[i].NombrePermiso</td>
+                                <td class="text-center">
+                                    <input type="checkbox" asp-for="Permisos[i].Asignado" class="form-check-input" />
+                                    <input type="hidden" asp-for="Permisos[i].PermisoId" />
+                                    <input type="hidden" asp-for="Permisos[i].NombrePermiso" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="botones-permisos">
+                    <a asp-action="SeleccionarRol" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left-circle"></i> Regresar
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save"></i> Guardar cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/permisos.css" asp-append-version="true" />
+}

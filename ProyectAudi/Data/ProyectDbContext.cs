@@ -12,56 +12,21 @@ namespace ProyectAudi.Data
         public ProyectDbContext(DbContextOptions<ProyectDbContext> options)
             : base(options) { }
 
-        public virtual DbSet<BITACORA_DETALLE> BITACORA_DETALLE { get; set; }
-        public virtual DbSet<BITACORA_ENCABEZADO> BITACORA_ENCABEZADO { get; set; }
         public virtual DbSet<CREDENCIAL> CREDENCIAL { get; set; }
         public virtual DbSet<OPERACION> OPERACION { get; set; }
         public virtual DbSet<PERMISO> PERMISO { get; set; }
         public virtual DbSet<ROL> ROL { get; set; }
+        public virtual DbSet<ROL_PERMISO> ROL_PERMISO { get; set; }
         public virtual DbSet<TABLAS_AUDITABLE> TABLAS_AUDITABLE { get; set; }
         public virtual DbSet<USUARIO> USUARIO { get; set; }
         public virtual DbSet<VW_Auditoria_Global> VW_Auditoria_Global { get; set; }
+        public virtual DbSet<TOKEN_RECUPERACION> TOKEN_RECUPERACION { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseSqlServer("Name=DefaultConnection");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<BITACORA_DETALLE>(entity =>
-            {
-                entity.HasKey(e => e.DETALLE_ID).HasName("PK__BITACORA__83681071ED184B52");
-
-                entity.HasOne(d => d.BITACORA)
-                    .WithMany(p => p.BITACORA_DETALLE)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__BITACORA___BITAC__7E37BEF6");
-            });
-
-            modelBuilder.Entity<BITACORA_ENCABEZADO>(entity =>
-            {
-                entity.HasKey(e => e.BITACORA_ID).HasName("PK__BITACORA__EF8B7ABEC01C1BBC");
-
-                entity.Property(e => e.FECHA_OPERACION).HasDefaultValueSql("(getdate())");
-
-                entity.HasOne(d => d.OPERACION)
-                    .WithMany(p => p.BITACORA_ENCABEZADO)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__BITACORA___OPERA__7A672E12");
-
-                entity.HasOne(d => d.TABLA)
-                    .WithMany(p => p.BITACORA_ENCABEZADO)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__BITACORA___TABLA__797309D9");
-
-                entity.HasOne(d => d.USUARIO_AFECTADO)
-                    .WithMany(p => p.BITACORA_ENCABEZADOUSUARIO_AFECTADO)
-                    .HasConstraintName("FK__BITACORA___USUAR__787EE5A0");
-
-                entity.HasOne(d => d.USUARIO)
-                    .WithMany(p => p.BITACORA_ENCABEZADOUSUARIO)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__BITACORA___USUAR__778AC167");
-            });
 
             modelBuilder.Entity<CREDENCIAL>(entity =>
             {
@@ -86,27 +51,34 @@ namespace ProyectAudi.Data
                 entity.ToTable(tb => tb.HasTrigger("TRG_PERMISO_AUDITORIA"));
 
                 entity.Property(e => e.FECHA_CREACION).HasDefaultValueSql("(getdate())");
-
-                entity.HasOne(d => d.ROL)
-                    .WithMany(p => p.PERMISO)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PERMISO_ROL");
             });
 
             modelBuilder.Entity<ROL>(entity =>
             {
                 entity.ToTable(tb => tb.HasTrigger("TRG_ROL_AUDITORIA"));
 
-                entity.Property(e => e.ESTADO).HasDefaultValue(true);
                 entity.Property(e => e.FECHA_CREACION).HasDefaultValueSql("(getdate())");
 
                 modelBuilder.Entity<USUARIO>()
                     .HasOne(u => u.ROL)
                     .WithMany(r => r.USUARIOS)
                     .HasForeignKey(u => u.ROL_ID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_USUARIO_ROL");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+            });
 
+            modelBuilder.Entity<ROL_PERMISO>(entity =>
+            {
+                entity.HasKey(e => new { e.ROL_ID, e.PERMISO_ID });
+
+                entity.HasOne(e => e.ROL)
+                    .WithMany(r => r.ROL_PERMISOS)
+                    .HasForeignKey(e => e.ROL_ID)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.PERMISO)
+                    .WithMany(p => p.ROL_PERMISOS)
+                    .HasForeignKey(e => e.PERMISO_ID)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<TABLAS_AUDITABLE>(entity =>
@@ -133,8 +105,5 @@ namespace ProyectAudi.Data
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-        public DbSet<ProyectAudi.Models.TOKEN_RECUPERACION> TOKEN_RECUPERACION { get; set; } = default!;
-
-
     }
 }

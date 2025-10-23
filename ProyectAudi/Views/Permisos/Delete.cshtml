@@ -1,0 +1,32 @@
+﻿@model ProyectAudi.ViewModels.Permisos.DeleteViewModel
+
+@{
+    ViewData["Title"] = "Eliminar Permiso";
+}
+
+<h2>¿Estás seguro que deseas eliminar este permiso?</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">Nombre</dt>
+        <dd class="col-sm-9">@Model.PERMISO_NOMBRE</dd>
+
+        <dt class="col-sm-3">Descripción</dt>
+        <dd class="col-sm-9">@Model.DESCRIPCION</dd>
+
+        <dt class="col-sm-3">Rol</dt>
+        <dd class="col-sm-9">@Model.ROL_NOMBRE</dd>
+
+        <dt class="col-sm-3">Creado por</dt>
+        <dd class="col-sm-9">@Model.CREADO_POR</dd>
+
+        <dt class="col-sm-3">Fecha creación</dt>
+        <dd class="col-sm-9">@Model.FECHA_CREACION.ToShortDateString()</dd>
+    </dl>
+</div>
+
+<form asp-action="DeleteConfirmed">
+    <input type="hidden" asp-for="PERMISO_ID" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

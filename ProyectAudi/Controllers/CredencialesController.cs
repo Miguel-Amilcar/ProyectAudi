@@ -145,6 +145,13 @@ namespace ProyectAudi.Controllers
 
             credencial.MFA_ULTIMO_USO = DateTime.Now;
             await _context.SaveChangesAsync();
+
+            var usuario = await _context.USUARIO.FirstOrDefaultAsync(u => u.USUARIO_ID == credencial.USUARIO_ID);
+            if (usuario != null)
+            {
+                HttpContext.Session.SetInt32("RolId", usuario.ROL_ID); // ✅ Esto sí funciona
+            }
+
             var claims = new List<Claim>
 {
              new Claim(ClaimTypes.Name, credencial.USUARIO_NOMBRE),

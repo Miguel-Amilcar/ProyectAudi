@@ -1,0 +1,57 @@
+﻿@model ProyectAudi.ViewModels.Crear_Contraseña.DeleteViewModel
+
+@{
+    ViewData["Title"] = "Eliminar";
+}
+
+<h2 class="text-danger mb-4">
+    <i class="bi bi-trash-fill"></i> Eliminar credencial
+</h2>
+@* 
+<div class="alert alert-warning">
+    ¿Estás seguro que deseas eliminar esta credencial? Esta acción no se puede deshacer.
+</div>
+ *@
+<div class="card border-danger mb-4">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-4">Usuario</dt>
+            <dd class="col-sm-8">@Model.USUARIO_NOMBRE</dd>
+
+            <dt class="col-sm-4">ID de usuario</dt>
+            <dd class="col-sm-8">@Model.USUARIO_ID</dd>
+
+            <dt class="col-sm-4">Intentos fallidos</dt>
+            <dd class="col-sm-8">@Model.INTENTOS_FALLIDOS</dd>
+
+            <dt class="col-sm-4">Bloqueado hasta</dt>
+            <dd class="col-sm-8">@Model.BLOQUEADO_HASTA?.ToString("g") ?? "—"</dd>
+
+            <dt class="col-sm-4">Último intento</dt>
+            <dd class="col-sm-8">@Model.FECHA_ULTIMO_INTENTO?.ToString("g") ?? "—"</dd>
+
+            <dt class="col-sm-4">Último cambio de contraseña</dt>
+            <dd class="col-sm-8">@Model.PASSWORD_ULTIMO_CAMBIO?.ToString("g") ?? "—"</dd>
+
+            <dt class="col-sm-4">MFA activo</dt>
+            <dd class="col-sm-8">@Model.MFA_ENABLED</dd>
+
+            <dt class="col-sm-4">Último uso de MFA</dt>
+            <dd class="col-sm-8">@Model.MFA_ULTIMO_USO?.ToString("g") ?? "—"</dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="CREDENCIAL_ID" />
+
+    <div class="d-flex justify-content-between">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Cancelar
+        </a>
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Eliminar
+        </button>
+    </div>
+</form>

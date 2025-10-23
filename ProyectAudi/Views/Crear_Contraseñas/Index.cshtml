@@ -1,0 +1,55 @@
+﻿@model List<ProyectAudi.ViewModels.Crear_Contraseña.IndexViewModel>
+
+@{
+    ViewData["Title"] = "Listado";
+}
+
+<h2 class="mb-4 text-primary">
+    <i class="bi bi-key-fill"></i> Credenciales registradas
+</h2>
+
+<table class="table table-bordered table-hover table-striped">
+    <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>ID Usuario</th>
+            <th>MFA</th>
+            <th>Intentos</th>
+            <th>Bloqueado hasta</th>
+            <th>Último intento</th>
+            <th class="text-center">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.CREDENCIAL_ID</td>
+                <td>@item.USUARIO_NOMBRE</td>
+                <td>@item.USUARIO_ID</td>
+                <td>@(item.MFA_ENABLED ? "Sí" : "No")</td>
+                <td>@item.INTENTOS_FALLIDOS</td>
+                <td>@item.BLOQUEADO_HASTA?.ToString("g") ?? "—"</td>
+                <td>@item.FECHA_ULTIMO_INTENTO?.ToString("g") ?? "—"</td>
+                <td class="text-center">
+                    <a asp-action="Details" asp-route-id="@item.CREDENCIAL_ID" class="btn btn-sm btn-info me-1">
+                        <i class="bi bi-eye-fill"></i>
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@item.CREDENCIAL_ID" class="btn btn-sm btn-warning me-1">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.CREDENCIAL_ID" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash-fill"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="mt-4">
+    <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Nueva credencial
+    </a>
+</div>

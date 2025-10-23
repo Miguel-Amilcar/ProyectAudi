@@ -1,165 +1,163 @@
-﻿@model ProyectAudi.Models.USUARIO
+﻿@model ProyectAudi.ViewModels.Usuario.EditViewModel
+
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Editar usuario";
+    var permisos = ViewBag.Permisos as HashSet<string> ?? new HashSet<string>();
 }
 
-<!DOCTYPE html>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Edit</title>
-</head>
-<body>
+@if (permisos.Contains("EDITAR"))
+{
+<h2 class="mb-4 text-primary">
+    <i class="bi bi-pencil-square"></i> Editar usuario
+</h2>
 
-<h4>USUARIO</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="USUARIO_ID" />
-            <div class="form-group">
-                <label asp-for="CUI" class="control-label"></label>
-                <input asp-for="CUI" class="form-control" />
-                <span asp-validation-for="CUI" class="text-danger"></span>
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="USUARIO_ID" />
+    <input type="hidden" asp-for="MODIFICADO_POR" value="@User.Identity?.Name" />
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-primary text-white">
+            <strong><i class="bi bi-person-fill me-1"></i> Datos personales</strong>
+        </div>
+        <div class="card-body">
+            <div class="row gy-3">
+                <div class="col-md-6">
+                    <label for="CUI" class="form-label">Cui</label>
+                    <input asp-for="CUI" class="form-control" />
+                    <span asp-validation-for="CUI" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label for="PRIMERNOMBRE" class="form-label">Primer nombre</label>
+                    <input asp-for="PRIMERNOMBRE" class="form-control" />
+                    <span asp-validation-for="PRIMERNOMBRE" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label for="SEGUNDONOMBRE" class="form-label">Segundo nombre</label>
+                    <input asp-for="SEGUNDONOMBRE" class="form-control" />
+                    <span asp-validation-for="SEGUNDONOMBRE" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label for="TERCERNOMBRE" class="form-label">Tercer nombre</label>
+                    <input asp-for="TERCERNOMBRE" class="form-control" />
+                    <span asp-validation-for="TERCERNOMBRE" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label for="PRIMERAPELLIDO" class="form-label">Primer apellido</label>
+                    <input asp-for="PRIMERAPELLIDO" class="form-control" />
+                    <span asp-validation-for="PRIMERAPELLIDO" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label for="SEGUNDOAPELLIDO" class="form-label">Segundo apellido</label>
+                    <input asp-for="SEGUNDOAPELLIDO" class="form-control" />
+                    <span asp-validation-for="SEGUNDOAPELLIDO" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label for="APELLIDOCASADA" class="form-label">Apellido de casada</label>
+                    <input asp-for="APELLIDOCASADA" class="form-control" />
+                    <span asp-validation-for="APELLIDOCASADA" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label for="FECHA_NACIMIENTO" class="form-label">Fecha de nacimiento</label>
+                    <input asp-for="FECHA_NACIMIENTO" type="date" class="form-control" />
+                    <span asp-validation-for="FECHA_NACIMIENTO" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label for="TELEFONO" class="form-label">Teléfono</label>
+                    <input asp-for="TELEFONO" class="form-control" />
+                    <span asp-validation-for="TELEFONO" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label for="DIRECCION" class="form-label">Dirección</label>
+                    <input asp-for="DIRECCION" class="form-control" />
+                    <span asp-validation-for="DIRECCION" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="PRIMERNOMBRE" class="control-label"></label>
-                <input asp-for="PRIMERNOMBRE" class="form-control" />
-                <span asp-validation-for="PRIMERNOMBRE" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SEGUNDONOMBRE" class="control-label"></label>
-                <input asp-for="SEGUNDONOMBRE" class="form-control" />
-                <span asp-validation-for="SEGUNDONOMBRE" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TERCERNOMBRE" class="control-label"></label>
-                <input asp-for="TERCERNOMBRE" class="form-control" />
-                <span asp-validation-for="TERCERNOMBRE" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PRIMERAPELLIDO" class="control-label"></label>
-                <input asp-for="PRIMERAPELLIDO" class="form-control" />
-                <span asp-validation-for="PRIMERAPELLIDO" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SEGUNDOAPELLIDO" class="control-label"></label>
-                <input asp-for="SEGUNDOAPELLIDO" class="form-control" />
-                <span asp-validation-for="SEGUNDOAPELLIDO" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="APELLIDOCASADA" class="control-label"></label>
-                <input asp-for="APELLIDOCASADA" class="form-control" />
-                <span asp-validation-for="APELLIDOCASADA" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FECHA_NACIMIENTO" class="control-label"></label>
-                <input asp-for="FECHA_NACIMIENTO" class="form-control" />
-                <span asp-validation-for="FECHA_NACIMIENTO" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TELEFONO" class="control-label"></label>
-                <input asp-for="TELEFONO" class="form-control" />
-                <span asp-validation-for="TELEFONO" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DIRECCION" class="control-label"></label>
-                <input asp-for="DIRECCION" class="form-control" />
-                <span asp-validation-for="DIRECCION" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PERSONA_NIT" class="control-label"></label>
-                <input asp-for="PERSONA_NIT" class="form-control" />
-                <span asp-validation-for="PERSONA_NIT" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PERSONA_DIRECCION" class="control-label"></label>
-                <input asp-for="PERSONA_DIRECCION" class="form-control" />
-                <span asp-validation-for="PERSONA_DIRECCION" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PERSONA_TELEFONOCASA" class="control-label"></label>
-                <input asp-for="PERSONA_TELEFONOCASA" class="form-control" />
-                <span asp-validation-for="PERSONA_TELEFONOCASA" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PERSONA_TELEFONOMOVIL" class="control-label"></label>
-                <input asp-for="PERSONA_TELEFONOMOVIL" class="form-control" />
-                <span asp-validation-for="PERSONA_TELEFONOMOVIL" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FOTOGRAFIA" class="control-label"></label>
-                <input asp-for="FOTOGRAFIA" class="form-control" />
-                <span asp-validation-for="FOTOGRAFIA" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DPI_PDF" class="control-label"></label>
-                <input asp-for="DPI_PDF" class="form-control" />
-                <span asp-validation-for="DPI_PDF" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="USUARIO_CORREO" class="control-label"></label>
-                <input asp-for="USUARIO_CORREO" class="form-control" />
-                <span asp-validation-for="USUARIO_CORREO" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ESTADO_TINY" class="control-label"></label>
-                <input asp-for="ESTADO_TINY" class="form-control" />
-                <span asp-validation-for="ESTADO_TINY" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ROL_ID" class="control-label"></label>
-                <input asp-for="ROL_ID" class="form-control" />
-                <span asp-validation-for="ROL_ID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CREADO_POR" class="control-label"></label>
-                <input asp-for="CREADO_POR" class="form-control" />
-                <span asp-validation-for="CREADO_POR" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FECHA_CREACION" class="control-label"></label>
-                <input asp-for="FECHA_CREACION" class="form-control" />
-                <span asp-validation-for="FECHA_CREACION" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MODIFICADO_POR" class="control-label"></label>
-                <input asp-for="MODIFICADO_POR" class="form-control" />
-                <span asp-validation-for="MODIFICADO_POR" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FECHA_MODIFICACION" class="control-label"></label>
-                <input asp-for="FECHA_MODIFICACION" class="form-control" />
-                <span asp-validation-for="FECHA_MODIFICACION" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="ELIMINADO" /> @Html.DisplayNameFor(model => model.ELIMINADO)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="ELIMINADO_POR" class="control-label"></label>
-                <input asp-for="ELIMINADO_POR" class="form-control" />
-                <span asp-validation-for="ELIMINADO_POR" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FECHA_ELIMINACION" class="control-label"></label>
-                <input asp-for="FECHA_ELIMINACION" class="form-control" />
-                <span asp-validation-for="FECHA_ELIMINACION" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-secondary text-white">
+            <strong><i class="bi bi-file-earmark-text-fill me-1"></i> Datos fiscales</strong>
+        </div>
+        <div class="card-body">
+            <div class="row gy-3">
+                <div class="col-md-6">
+                    <label for="PERSONA_NIT" class="form-label">Nit</label>
+                    <input asp-for="PERSONA_NIT" class="form-control" />
+                    <span asp-validation-for="PERSONA_NIT" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label for="PERSONA_DIRECCION" class="form-label">Dirección fiscal</label>
+                    <input asp-for="PERSONA_DIRECCION" class="form-control" />
+                    <span asp-validation-for="PERSONA_DIRECCION" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label for="PERSONA_TELEFONOCASA" class="form-label">Teléfono casa</label>
+                    <input asp-for="PERSONA_TELEFONOCASA" class="form-control" />
+                    <span asp-validation-for="PERSONA_TELEFONOCASA" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label for="PERSONA_TELEFONOMOVIL" class="form-label">Teléfono móvil</label>
+                    <input asp-for="PERSONA_TELEFONOMOVIL" class="form-control" />
+                    <span asp-validation-for="PERSONA_TELEFONOMOVIL" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-</body>
-</html>
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-info text-white">
+            <strong><i class="bi bi-gear-fill me-1"></i> Configuración de cuenta</strong>
+        </div>
+        <div class="card-body">
+            <div class="row gy-3">
+                <div class="col-md-6">
+                    <label for="USUARIO_CORREO" class="form-label">Correo electrónico</label>
+                    <input asp-for="USUARIO_CORREO" type="email" class="form-control" />
+                    <span asp-validation-for="USUARIO_CORREO" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label for="ROL_ID" class="form-label">Rol</label>
+                    <select asp-for="ROL_ID" asp-items="ViewBag.Roles" class="form-select"></select>
+                    <span asp-validation-for="ROL_ID" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Fotografía</label>
+                    <input type="file" name="FotografiaFile" class="form-control" accept="image/*" />
+                    <span asp-validation-for="FotografiaFile" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">DPI PDF</label>
+                    <input type="file" name="DpiFile" class="form-control" accept=".pdf" />
+                    <span asp-validation-for="DpiFile" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-start mt-4 gap-2">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save2"></i> Guardar cambios
+        </button>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Cancelar
+        </a>
+    </div>
+</form>
+
+}
+else
+{
+<div class="alert alert-warning">
+    <i class="bi bi-shield-lock"></i> No tenés permiso para editar usuarios.
+</div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

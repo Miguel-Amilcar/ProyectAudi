@@ -13,6 +13,15 @@ builder.Services.AddDbContext<ProyectDbContext>(options =>
 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddTransient<EmailService>();
+//builder.Services.AddScoped<IVirusScannerService>(provider =>
+//    new VirusScannerService("408d12adf6fe1ef16af3faf5f9ddaffeeb0671a784c3ee85f54d0dbca8c725c7")); // Reemplazá con tu clave real
+
+builder.Services.AddHttpClient(); // Necesario para VirusTotalNet
+
+builder.Services.AddScoped<IVirusScannerService>(provider =>
+{
+    return new VirusScannerService("6799ae737f29d63232872e6541292cbd169c2fd2c8bd2c96b08bd32666a96a4a"); // Reemplazá con tu clave real
+});
 
 
 builder.Services.AddSession(options =>
@@ -43,6 +52,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
+
+//esto lo agregue para que funcione lo de habilitar o desabilidar los botones de editar, delete y details...
+
+builder.Services.AddSession();
+
 
 
 

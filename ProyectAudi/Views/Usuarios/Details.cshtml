@@ -1,183 +1,109 @@
-﻿@model ProyectAudi.Models.USUARIO
+﻿@model ProyectAudi.ViewModels.Usuario.DetailsViewModel
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Detalles del Usuario";
+    var permisos = ViewBag.Permisos as HashSet<string> ?? new HashSet<string>();
 }
 
-<!DOCTYPE html>
+<h2 class="mb-4 text-primary">
+    <i class="bi bi-person-lines-fill"></i> Detalles del Usuario
+</h2>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
-</head>
-<body>
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-primary text-white">
+        <strong><i class="bi bi-info-circle-fill me-1"></i> Información general</strong>
+    </div>
+    <div class="card-body">
+        <div class="row gy-3">
+            <div class="col-md-6">
+                <strong>CUI:</strong><br />
+                <span class="text-muted">@Model.CUI</span>
+            </div>
+            <div class="col-md-6">
+                <strong>Nombre completo:</strong><br />
+                <span class="text-muted">
+                    @(string.Join(" ", new[] {
+                    Model.PRIMERNOMBRE,
+                    Model.SEGUNDONOMBRE,
+                    Model.TERCERNOMBRE,
+                    Model.PRIMERAPELLIDO,
+                    Model.SEGUNDOAPELLIDO,
+                    Model.APELLIDOCASADA
+                    }.Where(n => !string.IsNullOrWhiteSpace(n))))
+                </span>
+            </div>
+            <div class="col-md-6">
+                <strong>Fecha de nacimiento:</strong><br />
+                <span class="text-muted">@Model.FECHA_NACIMIENTO?.ToString("dd/MM/yyyy")</span>
+            </div>
+            <div class="col-md-6">
+                <strong>Teléfono:</strong><br />
+                <span class="text-muted">@Model.TELEFONO"</span>
+            </div>
+            <div class="col-md-6">
+                <strong>Dirección:</strong><br />
+                <span class="text-muted">@Model.DIRECCION</span>
+            </div>
+            <div class="col-md-6">
+                <strong>Correo electrónico:</strong><br />
+                <span class="text-muted">@Model.USUARIO_CORREO</span>
+            </div>
+            <div class="col-md-6">
+                <strong>Rol asignado:</strong><br />
+                <span class="badge bg-success">@Model.RolNombre</span>
+            </div>
+            <div class="col-md-6">
+                <strong>Estado:</strong><br />
+                @{
+                    var estadoTexto = Model.ESTADO_TINY switch
+                    {
+                        0 => "Inactivo",
+                        1 => "Activo",
+                        2 => "Suspendido",
+                        _ => "Desconocido"
+                    };
 
-<div>
-    <h4>USUARIO</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CUI)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CUI)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PRIMERNOMBRE)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PRIMERNOMBRE)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SEGUNDONOMBRE)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SEGUNDONOMBRE)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TERCERNOMBRE)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TERCERNOMBRE)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PRIMERAPELLIDO)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PRIMERAPELLIDO)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SEGUNDOAPELLIDO)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SEGUNDOAPELLIDO)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.APELLIDOCASADA)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.APELLIDOCASADA)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FECHA_NACIMIENTO)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FECHA_NACIMIENTO)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TELEFONO)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TELEFONO)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DIRECCION)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DIRECCION)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PERSONA_NIT)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PERSONA_NIT)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PERSONA_DIRECCION)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PERSONA_DIRECCION)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PERSONA_TELEFONOCASA)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PERSONA_TELEFONOCASA)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PERSONA_TELEFONOMOVIL)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PERSONA_TELEFONOMOVIL)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FOTOGRAFIA)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FOTOGRAFIA)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DPI_PDF)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DPI_PDF)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.USUARIO_CORREO)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.USUARIO_CORREO)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ESTADO_TINY)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ESTADO_TINY)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ROL_ID)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ROL_ID)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CREADO_POR)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CREADO_POR)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FECHA_CREACION)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FECHA_CREACION)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MODIFICADO_POR)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MODIFICADO_POR)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FECHA_MODIFICACION)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FECHA_MODIFICACION)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ELIMINADO)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ELIMINADO)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ELIMINADO_POR)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ELIMINADO_POR)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FECHA_ELIMINACION)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FECHA_ELIMINACION)
-        </dd>
-    </dl>
+                    var estadoClase = Model.ESTADO_TINY switch
+                    {
+                        0 => "badge bg-secondary",
+                        1 => "badge bg-success",
+                        2 => "badge bg-warning text-dark",
+                        _ => "badge bg-dark"
+                    };
+                }
+                <span class="@estadoClase px-2 py-1">@estadoTexto</span>
+            </div>
+        </div>
+
+        <hr class="my-4" />
+
+        <div class="row gy-3">
+            <div class="col-md-6">
+                <strong>Creado por:</strong><br />
+                <span class="text-muted">@Model.CREADO_POR</span>
+            </div>
+            <div class="col-md-6">
+                <strong>Fecha de creación:</strong><br />
+                <span class="text-muted">@Model.FECHA_CREACION?.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+            <div class="col-md-6">
+                <strong>Modificado por:</strong><br />
+                <span class="text-muted">@Model.MODIFICADO_POR</span>
+            </div>
+            <div class="col-md-6">
+                <strong>Fecha de modificación:</strong><br />
+                <span class="text-muted">@Model.FECHA_MODIFICACION?.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.USUARIO_ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
-</body>
-</html>
+
+@if (permisos.Contains("EDITAR"))
+{
+    <a asp-action="Edit" asp-route-id="@Model.USUARIO_ID" class="btn btn-warning">
+        <i class="bi bi-pencil-square"></i> Editar
+    </a>
+}
+<a asp-action="Index" class="btn btn-secondary">
+    <i class="bi bi-arrow-left-circle"></i> Volver
+</a>

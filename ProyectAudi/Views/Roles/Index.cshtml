@@ -1,0 +1,37 @@
+﻿@model IEnumerable<ProyectAudi.ViewModels.Roles.IndexViewModel>
+
+<h2>Listado de Roles</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Administrativo</th>
+            <th>Estado</th>
+            <th>Creado por</th>
+            <th>Fecha creación</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var rol in Model)
+        {
+            <tr>
+                <td>@rol.ROL_NOMBRE</td>
+                <td>@rol.ROL_DESCRIPCION</td>
+                <td>@(rol.ES_ADMINISTRATIVO ? "Sí" : "No")</td>
+                <td>@(rol.ESTADO ? "Activo" : "Inactivo")</td>
+                <td>@rol.CREADO_POR</td>
+                <td>@rol.FECHA_CREACION.ToShortDateString()</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@rol.ROL_ID">Detalles</a> |
+                    <a asp-action="Edit" asp-route-id="@rol.ROL_ID">Editar</a> |
+                    <a asp-action="Delete" asp-route-id="@rol.ROL_ID">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Crear nuevo rol</a>

@@ -25,8 +25,6 @@ public partial class CREDENCIAL
     [Column(TypeName = "datetime")]
     public DateTime? PASSWORD_ULTIMO_CAMBIO { get; set; }
 
-    public bool USUARIO_CAMBIOINICIAL { get; set; }
-
     public int INTENTOS_FALLIDOS { get; set; }
 
     [Column(TypeName = "datetime")]
@@ -50,4 +48,6 @@ public partial class CREDENCIAL
     [ForeignKey(nameof(USUARIO_ID))]
     [InverseProperty(nameof(USUARIO.CREDENCIAL))]
     public virtual USUARIO USUARIO { get; set; } = null!;
+
+
 }

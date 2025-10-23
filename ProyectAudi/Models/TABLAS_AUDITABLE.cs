@@ -20,6 +20,4 @@ public partial class TABLAS_AUDITABLE
 
     public bool ACTIVO { get; set; }
 
-    [InverseProperty("TABLA")]
-    public virtual ICollection<BITACORA_ENCABEZADO> BITACORA_ENCABEZADO { get; set; } = new List<BITACORA_ENCABEZADO>();
 }

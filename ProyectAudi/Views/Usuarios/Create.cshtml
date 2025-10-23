@@ -1,1 +1,134 @@
-﻿
+﻿@model ProyectAudi.ViewModels.Usuario.CreateViewModel
+
+@{
+    ViewData["Title"] = "Crear Usuario";
+    var permisos = ViewBag.Permisos as HashSet<string> ?? new HashSet<string>();
+}
+
+@if (permisos.Contains("CREAR"))
+{
+<h2 class="mb-4 text-primary"><i class="bi bi-person-plus-fill"></i> Crear nuevo usuario</h2>
+
+@using (Html.BeginForm("Create", "Usuarios", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <strong>Datos personales</strong>
+        </div>
+        <div class="card-body row g-3">
+            <div class="col-md-4">
+                @Html.Label("CUI", "Cui", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.CUI, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.CUI, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+                @Html.Label("PRIMERNOMBRE", "Primer nombre", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.PRIMERNOMBRE, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.PRIMERNOMBRE, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+                @Html.Label("SEGUNDONOMBRE", "Segundo nombre", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.SEGUNDONOMBRE, new { @class = "form-control" })
+            </div>
+            <div class="col-md-4">
+                @Html.Label("TERCERNOMBRE", "Tercer nombre", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.TERCERNOMBRE, new { @class = "form-control" })
+            </div>
+            <div class="col-md-4">
+                @Html.Label("PRIMERAPELLIDO", "Primer apellido", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.PRIMERAPELLIDO, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.PRIMERAPELLIDO, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+                @Html.Label("SEGUNDOAPELLIDO", "Segundo apellido", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.SEGUNDOAPELLIDO, new { @class = "form-control" })
+            </div>
+            <div class="col-md-4">
+                @Html.Label("APELLIDOCASADA", "Apellido de casada", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.APELLIDOCASADA, new { @class = "form-control" })
+            </div>
+            <div class="col-md-4">
+                @Html.Label("FECHA_NACIMIENTO", "Fecha de nacimiento", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.FECHA_NACIMIENTO, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(m => m.FECHA_NACIMIENTO, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+                @Html.Label("TELEFONO", "Teléfono", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.TELEFONO, new { @class = "form-control" })
+            </div>
+            <div class="col-md-12">
+                @Html.Label("DIRECCION", "Dirección", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.DIRECCION, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <strong>Datos fiscales y contacto</strong>
+        </div>
+        <div class="card-body row g-3">
+            <div class="col-md-4">
+                @Html.Label("PERSONA_NIT", "Nit", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.PERSONA_NIT, new { @class = "form-control" })
+            </div>
+            <div class="col-md-8">
+                @Html.Label("PERSONA_DIRECCION", "Dirección fiscal", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.PERSONA_DIRECCION, new { @class = "form-control" })
+            </div>
+            <div class="col-md-6">
+                @Html.Label("PERSONA_TELEFONOCASA", "Teléfono casa", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.PERSONA_TELEFONOCASA, new { @class = "form-control" })
+            </div>
+            <div class="col-md-6">
+                @Html.Label("PERSONA_TELEFONOMOVIL", "Teléfono móvil", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.PERSONA_TELEFONOMOVIL, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <strong>Cuenta y archivos</strong>
+        </div>
+        <div class="card-body row g-3">
+            <div class="col-md-6">
+                @Html.Label("USUARIO_CORREO", "Correo electrónico", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.USUARIO_CORREO, new { @class = "form-control", type = "email" })
+                @Html.ValidationMessageFor(m => m.USUARIO_CORREO, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6">
+                @Html.Label("ROL_ID", "Rol", new { @class = "form-label" })
+                @Html.DropDownListFor(m => m.ROL_ID, ViewBag.Roles as List<SelectListItem>, new { @class = "form-select" })
+                @Html.ValidationMessageFor(m => m.ROL_ID, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Fotografía</label>
+                <input type="file" name="FotografiaFile" class="form-control" accept="image/*" />
+                @Html.ValidationMessageFor(m => m.FotografiaFile, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">DPI PDF</label>
+                <input type="file" name="DpiFile" class="form-control" accept=".pdf" />
+                @Html.ValidationMessageFor(m => m.DpiFile, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save-fill"></i> Guardar
+        </button>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Cancelar
+        </a>
+    </div>
+}
+}
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

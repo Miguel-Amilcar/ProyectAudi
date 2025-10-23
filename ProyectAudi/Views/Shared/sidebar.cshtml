@@ -6,8 +6,13 @@
     var ctrl = (ViewContext.RouteData.Values["controller"]
                 ?? ViewContext.RouteData.Values["Controller"]
                 ?? "").ToString().ToLower();
+
+    // Verifica si el submenú de seguridad debe estar abierto
+    var seguridadActiva = ctrl == "usuarios" || ctrl == "roles" || ctrl == "permisos" || ctrl == "rol_permisos";
+
+    var rolId = Context.Session.GetInt32("RolId"); // ✅ Leer el rol actual
 }
-@* subido *@
+
 <aside class="dashboard-sidebar" id="sidebar" role="navigation" aria-label="Navegación principal">
     <div class="sidebar-title">Módulos</div>
     <nav class="sidebar-nav">
@@ -17,7 +22,7 @@
             <i class="bi bi-house-door"></i><span>Inicio</span>
         </a>
 
-        <a asp-controller="Credenciales" asp-action="Principal"
+        <a asp-controller="Crear_Contraseñas" asp-action="Index"
            class="nav-item @(ctrl == "credenciales" ? "is-active" : "")"
            aria-current="@(ctrl == "credenciales" ? "page" : null)">
             <i class="bi bi-key"></i><span>Credenciales</span>
@@ -29,11 +34,38 @@
             <i class="bi bi-activity"></i><span>Auditoría</span>
         </a>
 
-        <a asp-controller="Usuarios" asp-action="Index"
-           class="nav-item @(ctrl == "usuarios" ? "is-active" : "")"
-           aria-current="@(ctrl == "usuarios" ? "page" : null)">
-            <i class="bi bi-people"></i><span>Usuarios</span>
-        </a>
+        <div class="nav-item submenu-toggle" onclick="toggleSeguridad()">
+            <i class="bi bi-shield-lock"></i><span>Gestión de Seguridad</span>
+        </div>
+
+        <ul id="seguridad-submenu" class="submenu @(seguridadActiva ? "" : "oculto")">
+            <li>
+                <a asp-controller="Usuarios" asp-action="Index" class="nav-item @(ctrl == "usuarios" ? "is-active" : "")">
+                    <i class="bi bi-person"></i><span>Usuarios</span>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Roles" asp-action="Index" class="nav-item @(ctrl == "roles" ? "is-active" : "")">
+                    <i class="bi bi-shield"></i><span>Roles</span>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Permisos" asp-action="Index" class="nav-item @(ctrl == "permisos" ? "is-active" : "")">
+                    <i class="bi bi-lock"></i><span>Permisos</span>
+                </a>
+            </li>
+            <li>
+                @* ✅ Mostrar solo si el rol es SuperAdmin *@
+                @if (rolId == 1)
+                {
+                <li>
+                    <a asp-controller="Rol_permisos" asp-action="SeleccionarRol"
+                       class="nav-item @(ctrl == "rol_permisos" ? "is-active" : "")">
+                        <i class="bi bi-list-check"></i><span>Asignar Permisos a Rol</span>
+                    </a>
+                </li>
+                }
+        </ul>
 
         <a asp-controller="Configuracion" asp-action="Index"
            class="nav-item @(ctrl == "configuracion" ? "is-active" : "")"

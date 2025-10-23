@@ -146,7 +146,6 @@ namespace ProyectAudi.Controllers
                 credencial.USUARIO_CONTRASENA_HASH = hash;
                 credencial.USUARIO_SALT = salt;
                 credencial.PASSWORD_ULTIMO_CAMBIO = DateTime.Now;
-                credencial.USUARIO_CAMBIOINICIAL = true;
             }
 
             token.USADO = true;
