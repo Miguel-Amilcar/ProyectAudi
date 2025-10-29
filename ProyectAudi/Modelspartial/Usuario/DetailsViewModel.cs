@@ -31,7 +31,7 @@ namespace ProyectAudi.ViewModels.Usuario
 
         // Cuenta
         public string USUARIO_CORREO { get; set; } = string.Empty;
-        public string RolNombre { get; set; } = string.Empty;
+
         public byte ESTADO_TINY { get; set; }
 
         // Auditoría
@@ -40,5 +40,20 @@ namespace ProyectAudi.ViewModels.Usuario
 
         public string? MODIFICADO_POR { get; set; }
         public DateTime? FECHA_MODIFICACION { get; set; }
+
+        public string NombreCompleto { get; set; } = string.Empty;
+        public string RolNombre { get; set; } = string.Empty;
+
+    //    public string NombreCompleto =>
+    //string.Join(" ", new[] {
+    //    PRIMERNOMBRE,
+    //    SEGUNDONOMBRE,
+    //    TERCERNOMBRE,
+    //    PRIMERAPELLIDO,
+    //    SEGUNDOAPELLIDO,
+    //    APELLIDOCASADA
+    //}.Where(n => !string.IsNullOrWhiteSpace(n)));
+
+
     }
 }

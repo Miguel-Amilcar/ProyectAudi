@@ -8,6 +8,9 @@ using System.Security.Cryptography;
 using System.Text;
 using ProyectAudi.Modelspartial;
 using ProyectAudi.ViewModels.Crear_Contraseña;
+using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
+using System.Diagnostics;
+using System.Security.Policy;
 
 namespace ProyectAudi.Controllers
 {
@@ -31,38 +34,45 @@ namespace ProyectAudi.Controllers
                 return Forbid();
 
             var lista = _context.CREDENCIAL
+                .Where(c => !c.ELIMINADO) // 👈 Filtra solo credenciales activas
                 .Select(c => new IndexViewModel
                 {
                     CREDENCIAL_ID = c.CREDENCIAL_ID,
                     USUARIO_NOMBRE = c.USUARIO_NOMBRE,
                     USUARIO_ID = c.USUARIO_ID,
                     MFA_ENABLED = c.MFA_ENABLED,
-                    INTENTOS_FALLIDOS = c.INTENTOS_FALLIDOS,
-                    BLOQUEADO_HASTA = c.BLOQUEADO_HASTA,
-                    FECHA_ULTIMO_INTENTO = c.FECHA_ULTIMO_INTENTO
-                }).ToList();
+                    ULTIMA_IP = c.ULTIMA_IP,
+                    ULTIMO_USER_AGENT = c.ULTIMO_USER_AGENT
+                })
+                .ToList();
 
             return View(lista);
         }
 
+
+
         // 🔹 CREATE (GET)
         public IActionResult Create()
         {
-            var permisos = PermisoService.ObtenerPermisos(_context, HttpContext.Session.GetInt32("RolId") ?? 0);
+
+            int? rolId = HttpContext.Session.GetInt32("RolId");                     ////desde aca hasta 
+            var permisos = PermisoService.ObtenerPermisos(_context, rolId ?? 0);
+
             if (!PermisoService.Tiene(permisos, "CREAR"))
-            return Forbid();
+                return Forbid();
 
             ViewBag.Permisos = permisos;
             ViewBag.Usuarios = ObtenerUsuariosSelectList();
             return View(new CreateViewModel());
         }
 
-        // 🔹 CREATE (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateViewModel model)
         {
-            var permisos = PermisoService.ObtenerPermisos(_context, HttpContext.Session.GetInt32("RolId") ?? 0);
+            int? rolId = HttpContext.Session.GetInt32("RolId");
+            var permisos = PermisoService.ObtenerPermisos(_context, rolId ?? 0);
+
             if (!PermisoService.Tiene(permisos, "CREAR"))
                 return Forbid();
 
@@ -86,15 +96,17 @@ namespace ProyectAudi.Controllers
 
             var salt = GenerateSalt();
             var hash = HashPassword(model.PlainPassword, salt);
+            var encryptedPassword = PasswordEncryptor.Encrypt(model.PlainPassword); // ✅ AES
 
             var credencial = new CREDENCIAL
             {
                 USUARIO_NOMBRE = model.USUARIO_NOMBRE,
                 USUARIO_CONTRASENA_HASH = hash,
                 USUARIO_SALT = salt,
-                INTENTOS_FALLIDOS = 0,
+                CONTRASENA_CIFRADA = encryptedPassword, // ✅ Guardar cifrada
                 MFA_ENABLED = false,
-                USUARIO_ID = model.USUARIO_ID
+                USUARIO_ID = model.USUARIO_ID,
+                PASSWORD_ULTIMO_CAMBIO = DateTime.Now
             };
 
             _context.CREDENCIAL.Add(credencial);
@@ -103,12 +115,18 @@ namespace ProyectAudi.Controllers
             return RedirectToAction("Index");
         }
 
+
         // 🔹 EDIT (GET)
         public IActionResult Edit(int id)
         {
-            var permisos = PermisoService.ObtenerPermisos(_context, HttpContext.Session.GetInt32("RolId") ?? 0);
+            int? rolId = HttpContext.Session.GetInt32("RolId");                     ///desde aca hasta
+            var permisos = PermisoService.ObtenerPermisos(_context, rolId ?? 0);
+
             if (!PermisoService.Tiene(permisos, "EDITAR"))
                 return Forbid();
+
+            ViewBag.Permisos = permisos; 
+
 
             var c = _context.CREDENCIAL.Find(id);
             if (c == null) return NotFound();
@@ -116,48 +134,65 @@ namespace ProyectAudi.Controllers
             var model = new EditViewModel
             {
                 CREDENCIAL_ID = c.CREDENCIAL_ID,
-                USUARIO_NOMBRE = c.USUARIO_NOMBRE,
-                USUARIO_ID = c.USUARIO_ID,
-                INTENTOS_FALLIDOS = c.INTENTOS_FALLIDOS,
-                MFA_ENABLED = c.MFA_ENABLED
+                USUARIO_NOMBRE_ACTUAL = c.USUARIO_NOMBRE,
+                USUARIO_NOMBRE_NUEVO = c.USUARIO_NOMBRE // para que el campo venga prellenado
             };
 
-            ViewBag.Usuarios = ObtenerUsuariosSelectList();
+
             return View(model);
         }
+
 
         // 🔹 EDIT (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EditViewModel model)
         {
-            var permisos = PermisoService.ObtenerPermisos(_context, HttpContext.Session.GetInt32("RolId") ?? 0);
+            int? rolId = HttpContext.Session.GetInt32("RolId");
+            var permisos = PermisoService.ObtenerPermisos(_context, rolId ?? 0);
+
             if (!PermisoService.Tiene(permisos, "EDITAR"))
                 return Forbid();
 
             if (!ModelState.IsValid)
+                return View(model);
+
+            var c = _context.CREDENCIAL.Find(model.CREDENCIAL_ID);
+            if (c == null)
             {
-                ViewBag.Permisos = permisos;   //Si no le pasás los permisos otra vez, la vista podría ocultar el formulario o mostrar un mensaje de advertencia aunque el usuario sí tenga el permiso
-                ViewBag.Usuarios = ObtenerUsuariosSelectList();
+                ModelState.AddModelError(nameof(model.USUARIO_NOMBRE_ACTUAL), "No se encontró la credencial.");
                 return View(model);
             }
 
-            var c = _context.CREDENCIAL.Find(model.CREDENCIAL_ID);
-            if (c == null) return NotFound();
+            bool quiereCambiarContraseña = !string.IsNullOrWhiteSpace(model.ContraseñaActual);
 
-            c.USUARIO_NOMBRE = model.USUARIO_NOMBRE;
-            c.USUARIO_ID = model.USUARIO_ID;
-            c.INTENTOS_FALLIDOS = model.INTENTOS_FALLIDOS;
-            c.MFA_ENABLED = model.MFA_ENABLED;
+            if (quiereCambiarContraseña)
+            {
+                if (!ValidarPassword(model.ContraseñaActual, c.USUARIO_CONTRASENA_HASH, c.USUARIO_SALT))
+                {
+                    ModelState.AddModelError(nameof(model.ContraseñaActual), "La contraseña actual es incorrecta.");
+                    return View(model);
+                }
 
-            c.FECHA_ULTIMO_INTENTO = DateTime.Now;
-            c.PASSWORD_ULTIMO_CAMBIO = DateTime.Now;
-            c.MFA_ULTIMO_USO = model.MFA_ENABLED ? DateTime.Now : null;
-            c.BLOQUEADO_HASTA = model.INTENTOS_FALLIDOS >= 5 ? DateTime.Now.AddMinutes(15) : null;
+                var nuevoSalt = GenerateSalt();
+                var nuevoHash = HashPassword(model.NuevaContraseña, nuevoSalt);
+                var nuevaCifrada = PasswordEncryptor.Encrypt(model.NuevaContraseña); // ✅ AES
+
+                c.USUARIO_CONTRASENA_HASH = nuevoHash;
+                c.USUARIO_SALT = nuevoSalt;
+                c.CONTRASENA_CIFRADA = nuevaCifrada; // ✅ Guardar cifrada
+                c.PASSWORD_ULTIMO_CAMBIO = DateTime.Now;
+            }
+
+            c.USUARIO_NOMBRE = model.USUARIO_NOMBRE_NUEVO;
 
             _context.SaveChanges();
+            TempData["Alerta"] = "Credencial actualizada correctamente.";
             return RedirectToAction("Index");
         }
+
+
+
 
         // 🔹 Helpers
         private List<SelectListItem> ObtenerUsuariosSelectList()
@@ -201,16 +236,34 @@ namespace ProyectAudi.Controllers
 
         private static byte[] HashPassword(string password, byte[] salt)
         {
-            var combinado = Encoding.UTF8.GetBytes(password).Concat(salt).ToArray();
-            using var sha = SHA512.Create();
+            var combinado = salt.Concat(Encoding.UTF8.GetBytes(password)).ToArray();
+            using var sha = SHA256.Create(); // ✅ SHA256 para que coincida con el login
             return sha.ComputeHash(combinado);
         }
+
+
+        private static bool ValidarPassword(string password, byte[] hashAlmacenado, byte[] salt)
+        {
+            var hashCalculado = HashPassword(password, salt);
+
+            Debug.WriteLine("Salt: " + Convert.ToBase64String(salt));
+            Debug.WriteLine("Hash esperado: " + Convert.ToBase64String(hashAlmacenado));
+            Debug.WriteLine("Hash calculado: " + Convert.ToBase64String(hashCalculado));
+
+            return hashCalculado.SequenceEqual(hashAlmacenado);
+        }
+
+
         // 🔹 DELETE (GET)
         public IActionResult Delete(int id)
         {
-            var permisos = PermisoService.ObtenerPermisos(_context, HttpContext.Session.GetInt32("RolId") ?? 0);
+            int? rolId = HttpContext.Session.GetInt32("RolId");
+            var permisos = PermisoService.ObtenerPermisos(_context, rolId ?? 0);        //desede aca
+
             if (!PermisoService.Tiene(permisos, "ELIMINAR"))
                 return Forbid();
+
+            ViewBag.Permisos = permisos;
 
             var c = _context.CREDENCIAL.Find(id);
             if (c == null) return NotFound();
@@ -219,60 +272,68 @@ namespace ProyectAudi.Controllers
             {
                 CREDENCIAL_ID = c.CREDENCIAL_ID,
                 USUARIO_NOMBRE = c.USUARIO_NOMBRE,
-                USUARIO_ID = c.USUARIO_ID,
-                INTENTOS_FALLIDOS = c.INTENTOS_FALLIDOS,
-                BLOQUEADO_HASTA = c.BLOQUEADO_HASTA,
-                FECHA_ULTIMO_INTENTO = c.FECHA_ULTIMO_INTENTO,
                 PASSWORD_ULTIMO_CAMBIO = c.PASSWORD_ULTIMO_CAMBIO,
                 MFA_ENABLED = c.MFA_ENABLED,
-                MFA_ULTIMO_USO = c.MFA_ULTIMO_USO
+                MFA_ULTIMO_USO = c.MFA_ULTIMO_USO,
+                ULTIMA_IP = c.ULTIMA_IP,
+                ULTIMO_USER_AGENT = c.ULTIMO_USER_AGENT
             };
 
             return View(model);
         }
 
+
         // 🔹 DELETE (POST)
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var permisos = PermisoService.ObtenerPermisos(_context, HttpContext.Session.GetInt32("RolId") ?? 0);
+            int? rolId = HttpContext.Session.GetInt32("RolId");
+            var permisos = PermisoService.ObtenerPermisos(_context, rolId ?? 0);
+
             if (!PermisoService.Tiene(permisos, "ELIMINAR"))
                 return Forbid();
 
             var c = _context.CREDENCIAL.Find(id);
-            if (c == null) return NotFound();
+            if (c == null || c.ELIMINADO) return NotFound();
 
-            _context.CREDENCIAL.Remove(c);
+            c.ELIMINADO = true;
+            c.ELIMINADO_POR = User.Identity?.Name ?? "Sistema";
+            c.FECHA_ELIMINACION = DateTime.Now;
+
             _context.SaveChanges();
-
+            TempData["Alerta"] = "Credencial eliminada correctamente.";
             return RedirectToAction("Index");
         }
 
-        // 🔹 DETAILS
+
+        // 🔹 DETAILS (GET)
         public IActionResult Details(int id)
         {
-            var permisos = PermisoService.ObtenerPermisos(_context, HttpContext.Session.GetInt32("RolId") ?? 0);
+            int? rolId = HttpContext.Session.GetInt32("RolId");
+            var permisos = PermisoService.ObtenerPermisos(_context, rolId ?? 0);
+
             if (!PermisoService.Tiene(permisos, "VER"))
                 return Forbid();
 
             var c = _context.CREDENCIAL.Find(id);
-            if (c == null) return NotFound();
+            if (c == null)
+                return NotFound();
 
             var model = new DetailsViewModel
             {
                 CREDENCIAL_ID = c.CREDENCIAL_ID,
                 USUARIO_NOMBRE = c.USUARIO_NOMBRE,
                 USUARIO_ID = c.USUARIO_ID,
-                INTENTOS_FALLIDOS = c.INTENTOS_FALLIDOS,
-                BLOQUEADO_HASTA = c.BLOQUEADO_HASTA,
-                FECHA_ULTIMO_INTENTO = c.FECHA_ULTIMO_INTENTO,
                 PASSWORD_ULTIMO_CAMBIO = c.PASSWORD_ULTIMO_CAMBIO,
                 MFA_ENABLED = c.MFA_ENABLED,
-                MFA_ULTIMO_USO = c.MFA_ULTIMO_USO
+                MFA_ULTIMO_USO = c.MFA_ULTIMO_USO,
+                ULTIMA_IP = c.ULTIMA_IP,
+                ULTIMO_USER_AGENT = c.ULTIMO_USER_AGENT
             };
 
             return View(model);
         }
+
     }
 }

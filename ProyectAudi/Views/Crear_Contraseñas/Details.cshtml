@@ -1,50 +1,63 @@
 ﻿@model ProyectAudi.ViewModels.Crear_Contraseña.DetailsViewModel
+
 @{
-    ViewData["Title"] = "Detalles";
+    ViewData["Title"] = "Detalles de la Credencial";
+    var permisos = ViewBag.Permisos as HashSet<string> ?? new HashSet<string>();
 }
 
 <h2 class="mb-4 text-info">
-    <i class="bi bi-person-badge"></i> Detalles de credencial
+    <i class="bi bi-person-badge-fill"></i> Detalles de la Credencial
 </h2>
 
-<div class="card shadow-sm border-0">
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-info text-white">
+        <strong><i class="bi bi-key-fill me-1"></i> Información general</strong>
+    </div>
     <div class="card-body">
-        <dl class="row">
-            <dt class="col-sm-4">ID de credencial</dt>
-            <dd class="col-sm-8">@Model.CREDENCIAL_ID</dd>
-
-            <dt class="col-sm-4">Usuario de inicio de sesión</dt>
-            <dd class="col-sm-8">@Model.USUARIO_NOMBRE</dd>
-
-            <dt class="col-sm-4">ID de usuario</dt>
-            <dd class="col-sm-8">@Model.USUARIO_ID</dd>
-
-            <dt class="col-sm-4">Intentos fallidos</dt>
-            <dd class="col-sm-8">@Model.INTENTOS_FALLIDOS</dd>
-
-            <dt class="col-sm-4">Bloqueado hasta</dt>
-            <dd class="col-sm-8">@Model.BLOQUEADO_HASTA?.ToString("g") ?? "—"</dd>
-
-            <dt class="col-sm-4">Último intento</dt>
-            <dd class="col-sm-8">@Model.FECHA_ULTIMO_INTENTO?.ToString("g") ?? "—"</dd>
-
-            <dt class="col-sm-4">Último cambio de contraseña</dt>
-            <dd class="col-sm-8">@Model.PASSWORD_ULTIMO_CAMBIO?.ToString("g") ?? "—"</dd>
-
-            <dt class="col-sm-4">MFA activo</dt>
-            <dd class="col-sm-8">@Model.MFA_ENABLED</dd>
-
-            <dt class="col-sm-4">Último uso de MFA</dt>
-            <dd class="col-sm-8">@Model.MFA_ULTIMO_USO?.ToString("g") ?? "—"</dd>
-        </dl>
+        <div class="row gy-3">
+            <div class="col-md-6">
+                <strong>Usuario de inicio de sesión:</strong><br />
+                <span class="text-muted">@Model.USUARIO_NOMBRE</span>
+            </div>
+            <div class="col-md-6">
+                <strong>Último cambio de contraseña:</strong><br />
+                <span class="text-muted">@Model.PASSWORD_ULTIMO_CAMBIO?.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+            <div class="col-md-6">
+                <strong>MFA activo:</strong><br />
+                <span class="badge @(Model.MFA_ENABLED ? "bg-success" : "bg-secondary")">
+                    @(Model.MFA_ENABLED ? "Sí" : "No")
+                </span>
+            </div>
+            <div class="col-md-6">
+                <strong>Último uso de MFA:</strong><br />
+                <span class="text-muted">
+                    @(Model.MFA_ULTIMO_USO.HasValue ? Model.MFA_ULTIMO_USO.Value.ToString("dd/MM/yyyy") : "Sin registro")
+                </span>
+            </div>
+            <div class="col-md-6">
+                <strong>IP del último login:</strong><br />
+                <span class="text-muted">
+                    @(string.IsNullOrWhiteSpace(Model.ULTIMA_IP) ? "Sin registrar" : Model.ULTIMA_IP)
+                </span>
+            </div>
+            <div class="col-md-6">
+                <strong>Navegador / Sistema:</strong><br />
+                <span class="text-muted">
+                    @(string.IsNullOrWhiteSpace(Model.ULTIMO_USER_AGENT) ? "Sin registrar" : Model.ULTIMO_USER_AGENT)
+                </span>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="mt-4 d-flex justify-content-between">
-    <a asp-action="Index" class="btn btn-secondary">
-        <i class="bi bi-arrow-left-circle"></i> Volver al listado
-    </a>
-    <a asp-action="Edit" asp-route-id="@Model.CREDENCIAL_ID" class="btn btn-primary">
+@if (permisos.Contains("EDITAR"))
+{
+    <a asp-action="Edit" asp-route-id="@Model.CREDENCIAL_ID" class="btn btn-warning">
         <i class="bi bi-pencil-square"></i> Editar
     </a>
-</div>
+}
+<a asp-action="Index" class="btn btn-secondary">
+    <i class="bi bi-arrow-left-circle"></i> Volver
+</a>
+

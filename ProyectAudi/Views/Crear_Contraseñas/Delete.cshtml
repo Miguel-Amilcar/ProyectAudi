@@ -1,57 +1,110 @@
 ﻿@model ProyectAudi.ViewModels.Crear_Contraseña.DeleteViewModel
 
 @{
-    ViewData["Title"] = "Eliminar";
+    ViewData["Title"] = "Eliminar Credencial";
+    var permisos = ViewBag.Permisos as HashSet<string> ?? new HashSet<string>();
 }
 
-<h2 class="text-danger mb-4">
-    <i class="bi bi-trash-fill"></i> Eliminar credencial
-</h2>
-@* 
-<div class="alert alert-warning">
-    ¿Estás seguro que deseas eliminar esta credencial? Esta acción no se puede deshacer.
-</div>
- *@
-<div class="card border-danger mb-4">
-    <div class="card-body">
-        <dl class="row">
-            <dt class="col-sm-4">Usuario</dt>
-            <dd class="col-sm-8">@Model.USUARIO_NOMBRE</dd>
+@if (permisos.Contains("ELIMINAR"))
+{
+    <h2 class="mb-4 text-danger">
+        <i class="bi bi-trash-fill"></i> Confirmación de eliminación
+    </h2>
 
-            <dt class="col-sm-4">ID de usuario</dt>
-            <dd class="col-sm-8">@Model.USUARIO_ID</dd>
-
-            <dt class="col-sm-4">Intentos fallidos</dt>
-            <dd class="col-sm-8">@Model.INTENTOS_FALLIDOS</dd>
-
-            <dt class="col-sm-4">Bloqueado hasta</dt>
-            <dd class="col-sm-8">@Model.BLOQUEADO_HASTA?.ToString("g") ?? "—"</dd>
-
-            <dt class="col-sm-4">Último intento</dt>
-            <dd class="col-sm-8">@Model.FECHA_ULTIMO_INTENTO?.ToString("g") ?? "—"</dd>
-
-            <dt class="col-sm-4">Último cambio de contraseña</dt>
-            <dd class="col-sm-8">@Model.PASSWORD_ULTIMO_CAMBIO?.ToString("g") ?? "—"</dd>
-
-            <dt class="col-sm-4">MFA activo</dt>
-            <dd class="col-sm-8">@Model.MFA_ENABLED</dd>
-
-            <dt class="col-sm-4">Último uso de MFA</dt>
-            <dd class="col-sm-8">@Model.MFA_ULTIMO_USO?.ToString("g") ?? "—"</dd>
-        </dl>
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-danger text-white">
+            <strong><i class="bi bi-person-fill-lock me-1"></i> Datos de la credencial</strong>
+        </div>
+        <div class="card-body">
+            <div class="row gy-3">
+                <div class="col-md-6">
+                    <strong>Usuario de inicio de sesión:</strong><br />
+                    <span class="text-muted">@Model.USUARIO_NOMBRE</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Último cambio de contraseña:</strong><br />
+                    <span class="text-muted">@Model.PASSWORD_ULTIMO_CAMBIO?.ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>MFA activo:</strong><br />
+                    <span class="badge @(Model.MFA_ENABLED ? "bg-success" : "bg-secondary")">
+                        @(Model.MFA_ENABLED ? "Sí" : "No")
+                    </span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Último uso de MFA:</strong><br />
+                    <span class="text-muted">@Model.MFA_ULTIMO_USO?.ToString("dd/MM/yyyy")</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>IP del último login:</strong><br />
+                    <span class="text-muted">@(!string.IsNullOrWhiteSpace(Model.ULTIMA_IP) ? Model.ULTIMA_IP : "Sin registrar")</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Navegador / Sistema:</strong><br />
+                    <span class="text-muted">@(!string.IsNullOrWhiteSpace(Model.ULTIMO_USER_AGENT) ? Model.ULTIMO_USER_AGENT : "Sin registrar")</span>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<form asp-action="DeleteConfirmed" method="post">
-    @Html.AntiForgeryToken()
-    <input type="hidden" asp-for="CREDENCIAL_ID" />
+    <!-- Modal de confirmación -->
+    <div class="modal fade" id="confirmarEliminacion" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-danger text-white rounded-top-4">
+                    <h5 class="modal-title d-flex align-items-center" id="confirmarEliminacionLabel">
+                        <i class="bi bi-trash-fill me-2 fs-4"></i>
+                        Confirmar eliminación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
 
-    <div class="d-flex justify-content-between">
-        <a asp-action="Index" class="btn btn-secondary">
-            <i class="bi bi-arrow-left-circle"></i> Cancelar
-        </a>
-        <button type="submit" class="btn btn-danger">
-            <i class="bi bi-trash"></i> Eliminar
+                <div class="modal-body px-4 py-3">
+                    <div class="alert alert-danger text-center mb-4" role="alert">
+                        <i class="bi bi-exclamation-circle-fill fs-5 text-danger mb-2 d-block"></i>
+                        <div>
+                            ¿Estás seguro que querés eliminar la credencial de <strong>@Model.USUARIO_NOMBRE</strong>?<br />
+                            <small class="text-muted">Esta acción no se puede deshacer.</small>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete" asp-controller="Crear_Contraseñas" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="CREDENCIAL_ID" />
+
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-danger w-100">
+                                <i class="bi bi-trash-fill me-1"></i> Sí, eliminar
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">
+                                <i class="bi bi-x-circle me-1"></i> Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="botones-permisos d-flex justify-content-end align-items-center gap-2 mt-4">
+        <button type="button" class="btn btn-danger px-3 py-1" data-bs-toggle="modal" data-bs-target="#confirmarEliminacion">
+            <i class="bi bi-trash-fill me-1"></i> Eliminar credencial
         </button>
+        <a asp-action="Index" asp-controller="Crear_Contraseñas" class="btn btn-outline-secondary px-3 py-1 d-inline-flex align-items-center">
+            <i class="bi bi-x-circle me-1"></i> Cancelar
+        </a>
     </div>
-</form>
+}
+else
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-shield-lock"></i> No tenés permiso para eliminar credenciales.
+    </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

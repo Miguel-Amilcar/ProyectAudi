@@ -1,53 +1,111 @@
 ﻿@model ProyectAudi.ViewModels.Crear_Contraseña.EditViewModel
 
 @{
-    ViewData["Title"] = "Editar";
+    ViewData["Title"] = "Editar credencial";
+    var permisos = ViewBag.Permisos as HashSet<string> ?? new HashSet<string>();
 }
 
-<h2 class="mb-4 text-warning">
+<h2 class="mb-4 text-primary">
     <i class="bi bi-pencil-square"></i> Editar credencial
 </h2>
 
-<form asp-action="Edit" method="post">
+<form asp-action="Edit" method="post" id="form-edicion">
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(m => m.CREDENCIAL_ID)
+    <input type="hidden" asp-for="MODIFICADO_POR" value="@User.Identity?.Name" />
 
     <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body row g-3">
-            <div class="col-md-6">
-                @Html.LabelFor(m => m.USUARIO_NOMBRE, new { @class = "form-label" })
-                @Html.TextBoxFor(m => m.USUARIO_NOMBRE, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.USUARIO_NOMBRE, "", new { @class = "text-danger" })
-            </div>
+        <div class="card-header bg-primary text-white">
+            <strong><i class="bi bi-person-fill-lock me-1"></i> Datos de acceso</strong>
+        </div>
+        <div class="card-body">
+            <div class="row gy-3">
+                <div class="col-md-6">
+                    <label asp-for="USUARIO_NOMBRE_ACTUAL" class="form-label"></label>
+                    <input asp-for="USUARIO_NOMBRE_ACTUAL" class="form-control" />
+                    <span asp-validation-for="USUARIO_NOMBRE_ACTUAL" class="text-danger"></span>
+                </div>
 
-            <div class="col-md-6">
-                @Html.LabelFor(m => m.USUARIO_ID, new { @class = "form-label" })
-                @Html.DropDownListFor(m => m.USUARIO_ID, ViewBag.Usuarios as List<SelectListItem>, "Seleccione un usuario", new { @class = "form-select" })
-                @Html.ValidationMessageFor(m => m.USUARIO_ID, "", new { @class = "text-danger" })
-            </div>
+                <div class="col-md-6">
+                    <label asp-for="USUARIO_NOMBRE_NUEVO" class="form-label"></label>
+                    <input asp-for="USUARIO_NOMBRE_NUEVO" class="form-control" />
+                    <span asp-validation-for="USUARIO_NOMBRE_NUEVO" class="text-danger"></span>
+                </div>
 
-            <div class="col-md-4">
-                @Html.LabelFor(m => m.INTENTOS_FALLIDOS, new { @class = "form-label" })
-                @Html.TextBoxFor(m => m.INTENTOS_FALLIDOS, new { @class = "form-control", type = "number", min = "0" })
-                @Html.ValidationMessageFor(m => m.INTENTOS_FALLIDOS, "", new { @class = "text-danger" })
-            </div>
 
-            <div class="col-md-4">
-                @Html.LabelFor(m => m.MFA_ENABLED, new { @class = "form-label" })
-                <div class="form-check mt-2">
-                    @Html.CheckBoxFor(m => m.MFA_ENABLED, new { @class = "form-check-input" })
-                    <label class="form-check-label">Activar MFA</label>
+                <div class="col-md-6">
+                    <label asp-for="ContraseñaActual" class="form-label"></label>
+                    <input asp-for="ContraseñaActual" class="form-control" />
+                    <span asp-validation-for="ContraseñaActual" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="NuevaContraseña" class="form-label"></label>
+                    <input asp-for="NuevaContraseña" class="form-control" />
+                    <span asp-validation-for="NuevaContraseña" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ConfirmacionContraseña" class="form-label"></label>
+                    <input asp-for="ConfirmacionContraseña" class="form-control" />
+                    <span asp-validation-for="ConfirmacionContraseña" class="text-danger"></span>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="d-flex justify-content-end">
-        <a asp-action="Index" class="btn btn-secondary me-2">
-            <i class="bi bi-arrow-left-circle"></i> Cancelar
-        </a>
-        <button type="submit" class="btn btn-warning">
-            <i class="bi bi-save2"></i> Guardar cambios
+    <!-- Modal de confirmación -->
+    <div class="modal fade" id="confirmarEdicion" tabindex="-1" aria-labelledby="confirmarEdicionLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-warning text-dark rounded-top-4">
+                    <h5 class="modal-title d-flex align-items-center" id="confirmarEdicionLabel">
+                        <i class="bi bi-pencil-square me-2 fs-4"></i>
+                        Confirmar edición
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body px-4 py-3">
+                    <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                        <i class="bi bi-info-circle-fill me-2 fs-5 text-warning"></i>
+                        <div>
+                            ¿Estás seguro que querés guardar los cambios para <strong>@Model.USUARIO_NOMBRE_ACTUAL</strong>?
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer px-4 py-3 border-top-0 d-flex flex-wrap justify-content-end gap-3">
+                    <form asp-action="Edit" asp-controller="Crear_Contraseñas" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="CREDENCIAL_ID" />
+                        <input type="hidden" asp-for="USUARIO_NOMBRE_ACTUAL" />
+                        <input type="hidden" asp-for="MODIFICADO_POR" value="@User.Identity?.Name" />
+                        <button type="submit" class="btn btn-warning px-4 text-dark">
+                            <i class="bi bi-check-circle-fill me-1"></i> Sí, guardar
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-1"></i> Cancelar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Botones -->
+    <div class="botones-permisos d-flex justify-content-end align-items-center gap-2 mt-4">
+        <button type="button" class="btn btn-warning px-3 py-1 text-dark" data-bs-toggle="modal" data-bs-target="#confirmarEdicion">
+            <i class="bi bi-pencil-square me-1"></i> Guardar cambios
         </button>
+        <a asp-action="Index" asp-controller="Crear_Contraseñas" class="btn btn-outline-secondary px-3 py-1 d-inline-flex align-items-center">
+            <i class="bi bi-x-circle me-1"></i> Cancelar
+        </a>
     </div>
 </form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

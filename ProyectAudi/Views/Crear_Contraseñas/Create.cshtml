@@ -1,20 +1,34 @@
 ﻿@model ProyectAudi.ViewModels.Crear_Contraseña.CreateViewModel
 
 @{
-    ViewData["Title"] = "Crear";
+    ViewData["Title"] = "Crear credencial";
     var permisos = ViewBag.Permisos as HashSet<string> ?? new HashSet<string>();
 }
 
-<h2 class="mb-4 text-primary">
-    <i class="bi bi-plus-circle-fill"></i> Nueva credencial
-</h2>
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@error.ErrorMessage</div>
+        }
+    </div>
+}
 
 @if (permisos.Contains("CREAR"))
 {
-    <form asp-action="Create" method="post">
+    <h2 class="mb-4 text-primary">
+        <i class="bi bi-plus-circle-fill"></i> Crear nueva credencial
+    </h2>
+
+    @using (Html.BeginForm("Create", "Crear_Contraseñas", FormMethod.Post))
+    {
         @Html.AntiForgeryToken()
 
-        <div class="card shadow-sm border-0 mb-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <strong>Datos de acceso</strong>
+            </div>
             <div class="card-body row g-3">
                 <div class="col-md-6">
                     @Html.LabelFor(m => m.USUARIO_NOMBRE, new { @class = "form-label" })
@@ -28,6 +42,19 @@
                     @Html.ValidationMessageFor(m => m.PlainPassword, "", new { @class = "text-danger" })
                 </div>
 
+                <div class="col-md-6">
+                    @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label" })
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Repetir contraseña" })
+                    @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-info text-white">
+                <strong>Asignación de usuario</strong>
+            </div>
+            <div class="card-body row g-3">
                 <div class="col-md-12">
                     @Html.LabelFor(m => m.USUARIO_ID, new { @class = "form-label" })
                     @Html.DropDownListFor(m => m.USUARIO_ID, ViewBag.Usuarios as List<SelectListItem>, "Seleccione un usuario", new { @class = "form-select" })
@@ -45,16 +72,25 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-save2"></i> Crear credencial
+        <div class="botones-permisos d-flex justify-content-end align-items-center gap-2 mt-4">
+            <button type="submit" class="btn btn-success px-3 py-1">
+                <i class="bi bi-check-circle-fill me-1"></i> Guardar credencial
             </button>
+            <a asp-action="Index" asp-controller="Crear_Contraseñas" class="btn btn-outline-secondary px-3 py-1 d-inline-flex align-items-center">
+                <i class="bi bi-x-circle me-1"></i> Cancelar
+            </a>
         </div>
-    </form>
+    }
 }
 else
 {
     <div class="alert alert-warning">
         <i class="bi bi-shield-lock"></i> No tenés permiso para crear credenciales.
     </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

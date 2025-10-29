@@ -89,5 +89,21 @@ namespace ProyectAudi.ViewModels.Usuario
 
         // Este campo se asigna automáticamente en el controlador
         public string CREADO_POR { get; set; } = string.Empty;
+        //public string RolNombre { get; set; }
+        public int USUARIO_ID { get; set; }
+
+
+        public string NombreCompleto =>
+    string.Join(" ", new[] {
+        PRIMERNOMBRE,
+        SEGUNDONOMBRE,
+        TERCERNOMBRE,
+        PRIMERAPELLIDO,
+        SEGUNDOAPELLIDO,
+        APELLIDOCASADA
+    }.Where(n => !string.IsNullOrWhiteSpace(n)));
+
+
+
     }
 }

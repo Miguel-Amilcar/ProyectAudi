@@ -2,8 +2,6 @@
 @{
     ViewData["OcultarHeader"] = true;
 }
-
-
 <div class="login-card">
     <div class="login-image">
         <img src="~/img/login-illustration.png" alt="Ilustración de login" />
@@ -11,6 +9,7 @@
 
     <div class="login-form">
         <h2>Bienvenido de nuevo</h2>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         @if (TempData["BloqueoRecuperacion"] != null)
         {

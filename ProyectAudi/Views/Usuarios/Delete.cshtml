@@ -1,6 +1,5 @@
 ﻿@model ProyectAudi.ViewModels.Usuario.DeleteViewModel
 
-
 @{
     ViewData["Title"] = "Eliminar Usuario";
     var permisos = ViewBag.Permisos as HashSet<string> ?? new HashSet<string>();
@@ -8,120 +7,137 @@
 
 @if (permisos.Contains("ELIMINAR"))
 {
-<h2 class="mb-4 text-danger">
-    <i class="bi bi-trash-fill"></i> Confirmación de eliminación
-</h2>
+    <h2 class="mb-4 text-danger">
+        <i class="bi bi-trash-fill"></i> Confirmación de eliminación
+    </h2>
 
-// <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
-//     <i class="bi bi-exclamation-triangle-fill me-2 fs-4"></i>
-//     <div>
-//         ¿Está seguro que desea eliminar al usuario <strong>@Model.NombreCompleto</strong>? Esta acción no se puede deshacer.
-//     </div>
-// </div>
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-danger text-white">
+            <strong><i class="bi bi-person-fill me-1"></i> Datos del usuario</strong>
+        </div>
+        <div class="card-body">
+            <div class="row gy-3">
+                <div class="col-md-6">
+                    <strong>CUI:</strong><br />
+                    <span class="text-muted">@Model.CUI</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Nombre completo:</strong><br />
+                    <span class="text-muted">@Model.NombreCompleto</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Correo:</strong><br />
+                    <span class="text-muted">@Model.USUARIO_CORREO</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Teléfono:</strong><br />
+                    <span class="text-muted">@Model.TELEFONO</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Dirección:</strong><br />
+                    <span class="text-muted">@Model.DIRECCION</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Rol:</strong><br />
+                    <span class="badge bg-info text-dark">@Model.RolNombre</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Estado:</strong><br />
+                    @{
+                        var estadoTexto = Model.ESTADO_TINY switch
+                        {
+                            0 => "Inactivo",
+                            1 => "Activo",
+                            2 => "Suspendido",
+                            _ => "Desconocido"
+                        };
 
-<div class="card shadow-sm border-0 mb-4">
-    <div class="card-header bg-danger text-white">
-        <strong><i class="bi bi-person-fill me-1"></i> Datos del usuario</strong>
-    </div>
-    <div class="card-body">
-        <div class="row gy-3">
-            <div class="col-md-6">
-                <strong>CUI:</strong><br />
-                <span class="text-muted">@Model.CUI</span>
-            </div>
-            <div class="col-md-6">
-                <strong>Nombre completo:</strong><br />
-                <span class="text-muted">@Model.NombreCompleto</span>
-            </div>
-            <div class="col-md-6">
-                <strong>Correo:</strong><br />
-                <span class="text-muted">@Model.USUARIO_CORREO</span>
-            </div>
-            <div class="col-md-6">
-                <strong>Teléfono:</strong><br />
-                <span class="text-muted">@Model.TELEFONO</span>
-            </div>
-            <div class="col-md-6">
-                <strong>Dirección:</strong><br />
-                <span class="text-muted">@Model.DIRECCION</span>
-            </div>
-            <div class="col-md-6">
-                <strong>Rol:</strong><br />
-                <span class="badge bg-info text-dark">@Model.RolNombre</span>
-            </div>
-            <div class="col-md-6">
-                <strong>Estado:</strong><br />
-                @{
-                    var estadoTexto = Model.ESTADO_TINY switch
-                    {
-                        0 => "Inactivo",
-                        1 => "Activo",
-                        2 => "Suspendido",
-                        _ => "Desconocido"
-                    };
-
-                    var estadoClase = Model.ESTADO_TINY switch
-                    {
-                        0 => "badge bg-secondary",
-                        1 => "badge bg-success",
-                        2 => "badge bg-warning text-dark",
-                        _ => "badge bg-dark"
-                    };
-                }
-                <span class="@estadoClase px-2 py-1">@estadoTexto</span>
-            </div>
-            <div class="col-md-6">
-                <strong>Creado por:</strong><br />
-                <span class="text-muted">@Model.CREADO_POR</span>
-            </div>
-            <div class="col-md-6">
-                <strong>Fecha de creación:</strong><br />
-                <span class="text-muted">
-                    @(Model.FECHA_CREACION?.ToString("dd/MM/yyyy") ?? "Sin fecha")
-                </span>
+                        var estadoClase = Model.ESTADO_TINY switch
+                        {
+                            0 => "badge bg-secondary",
+                            1 => "badge bg-success",
+                            2 => "badge bg-warning text-dark",
+                            _ => "badge bg-dark"
+                        };
+                    }
+                    <span class="@estadoClase px-2 py-1">@estadoTexto</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Creado por:</strong><br />
+                    <span class="text-muted">@Model.CREADO_POR</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Fecha de creación:</strong><br />
+                    <span class="text-muted">
+                        @(Model.FECHA_CREACION?.ToString("dd/MM/yyyy") ?? "Sin fecha")
+                    </span>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-    <div class="d-flex justify-content-end gap-2 mt-3">
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarEliminacion">
-            <i class="bi bi-trash-fill"></i> Eliminar
+    <div class="modal fade" id="confirmarEliminacion" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-danger text-white rounded-top-4">
+                    <h5 class="modal-title d-flex align-items-center" id="confirmarEliminacionLabel">
+                        <i class="bi bi-trash-fill me-2 fs-4"></i>
+                        Confirmar eliminación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body px-4 py-3">
+                    <!-- Alerta con mensaje -->
+                    <div class="alert alert-danger text-center mb-4" role="alert">
+                        <i class="bi bi-exclamation-circle-fill fs-5 text-danger mb-2 d-block"></i>
+                        <div>
+                            ¿Estás seguro que querés eliminar al usuario <strong>@Model.NombreCompleto</strong>?<br />
+                            <small class="text-muted">Esta acción lo marcará como <strong>inactivo</strong> en el sistema.</small>
+                        </div>
+                    </div>
+
+                    <!-- Botones fuera de la alerta, centrados y del mismo ancho -->
+                    <form asp-action="DeleteConfirmed" asp-controller="Usuarios" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="USUARIO_ID" />
+                        <input type="hidden" asp-for="MODIFICADO_POR" value="@User.Identity?.Name" />
+
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-danger w-100">
+                                <i class="bi bi-trash-fill me-1"></i> Sí, eliminar
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">
+                                <i class="bi bi-x-circle me-1"></i> Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="botones-permisos d-flex justify-content-end align-items-center gap-2 mt-4">
+        <button type="button" class="btn btn-danger px-3 py-1" data-bs-toggle="modal" data-bs-target="#confirmarEliminacion">
+            <i class="bi bi-trash-fill me-1"></i> Eliminar usuario
         </button>
-        <a asp-action="Index" asp-controller="Usuarios" class="btn btn-secondary">
-            <i class="bi bi-arrow-left-circle"></i> Cancelar
+        <a asp-action="Index" asp-controller="Usuarios" class="btn btn-outline-secondary px-3 py-1 d-inline-flex align-items-center">
+            <i class="bi bi-x-circle me-1"></i> Cancelar
         </a>
     </div>
 
-
-<!-- Modal de confirmación -->
-<div class="modal fade" id="confirmarEliminacion" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="confirmarEliminacionLabel">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Confirmar eliminación
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                ¿Estás seguro que querés eliminar al usuario <strong>@Model.NombreCompleto</strong>? Esta acción lo marcará como inactivo en el sistema.
-            </div>
-            <div class="modal-footer">
-                <form asp-action="DeleteConfirmed" asp-controller="Usuarios" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" asp-for="USUARIO_ID" />
-                    <button type="submit" class="btn btn-danger">Sí, eliminar</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 }
 else
 {
-<div class="alert alert-warning">
-    <i class="bi bi-shield-lock"></i> No tenés permiso para eliminar usuarios.
-</div>
+    <div class="alert alert-warning">
+        <i class="bi bi-shield-lock"></i> No tenés permiso para eliminar usuarios.
+    </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

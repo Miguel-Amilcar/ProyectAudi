@@ -18,12 +18,19 @@ namespace ProyectAudi.ViewModels.Crear_Contraseña
         [Display(Name = "Contraseña inicial")]
         public string PlainPassword { get; set; } = null!;
 
+        [Required(ErrorMessage = "Debe confirmar la contraseña.")]
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirmar contraseña")]
+        [Compare("PlainPassword", ErrorMessage = "Las contraseñas no coinciden.")]
+        public string ConfirmPassword { get; set; } = null!;
+
         [Required(ErrorMessage = "Debe seleccionar un usuario.")]
         [Display(Name = "Asignar a")]
         public int USUARIO_ID { get; set; }
 
         // Solo para mostrar en la vista, no se envía al controlador
         public string? NombreCompletoUsuario { get; set; }
+
     }
 }
 

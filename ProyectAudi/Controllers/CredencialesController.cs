@@ -49,22 +49,31 @@ namespace ProyectAudi.Controllers
                 return View(model);
             }
 
-            if (!ValidarPassword(model.Contrasena, credencial))
+            bool esValida = ValidarPassword(model.Contrasena, credencial);
+
+            if (!esValida)
             {
                 ModelState.AddModelError(nameof(model.Contrasena), "La contraseña es incorrecta.");
                 return View(model);
             }
 
-            // ✅ Solo aquí es seguro usar credencial
+            // ✅ Login exitoso: registrar IP y navegador
+            credencial.ULTIMA_IP = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault()
+                                   ?? HttpContext.Connection.RemoteIpAddress?.ToString();
+            credencial.ULTIMO_USER_AGENT = Request.Headers["User-Agent"].ToString();
+
+            await _context.SaveChangesAsync();
+
+            // Guardar sesión
             HttpContext.Session.SetString("UsuarioNombre", credencial.USUARIO_NOMBRE);
             HttpContext.Session.SetInt32("UsuarioId", credencial.USUARIO_ID);
 
-            if (!credencial.MFA_ENABLED)
-                return RedirectToAction("ActivarMFA");
+            if (credencial.MFA_ENABLED)
+                return RedirectToAction("ValidarMFA");
 
-            ViewBag.MFAActivo = true;
-            return RedirectToAction("ValidarMFA");
+            return RedirectToAction("ActivarMFA");
         }
+
 
 
         // GET: Activar MFA
@@ -187,11 +196,13 @@ namespace ProyectAudi.Controllers
         // Helpers
         private static bool ValidarPassword(string password, CREDENCIAL credencial)
         {
-            var combinado = Encoding.UTF8.GetBytes(password).Concat(credencial.USUARIO_SALT).ToArray();
-            using var sha = SHA512.Create();
+            var combinado = credencial.USUARIO_SALT.Concat(Encoding.UTF8.GetBytes(password)).ToArray();
+            using var sha = SHA256.Create(); // ✅ SHA256 según consigna
             var hash = sha.ComputeHash(combinado);
             return hash.SequenceEqual(credencial.USUARIO_CONTRASENA_HASH);
         }
+
+
 
     }
 }

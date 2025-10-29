@@ -138,14 +138,53 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-start mt-4 gap-2">
-        <button type="submit" class="btn btn-primary">
-            <i class="bi bi-save2"></i> Guardar cambios
-        </button>
-        <a asp-action="Index" class="btn btn-secondary">
-            <i class="bi bi-arrow-left-circle"></i> Cancelar
-        </a>
-    </div>
+        <div class="modal fade" id="confirmarEdicion" tabindex="-1" aria-labelledby="confirmarEdicionLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-md">
+                <div class="modal-content border-0 shadow-lg rounded-4">
+                    <div class="modal-header bg-warning text-dark rounded-top-4">
+                        <h5 class="modal-title d-flex align-items-center" id="confirmarEdicionLabel">
+                            <i class="bi bi-pencil-square me-2 fs-4"></i>
+                            Confirmar edición
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+
+                    <div class="modal-body px-4 py-3">
+                        <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                            <i class="bi bi-info-circle-fill me-2 fs-5 text-warning"></i>
+                            <div>
+                                ¿Estás seguro que querés guardar los cambios para <strong>@Model.NombreCompleto</strong>?
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer px-4 py-3 border-top-0 d-flex flex-wrap justify-content-end gap-3">
+                        <form asp-action="EditConfirmed" asp-controller="Usuarios" method="post" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" asp-for="USUARIO_ID" />
+                            <input type="hidden" asp-for="MODIFICADO_POR" value="@User.Identity?.Name" />
+                            <button type="submit" class="btn btn-warning px-4 text-dark">
+                                <i class="bi bi-check-circle-fill me-1"></i> Sí, guardar
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
+                                <i class="bi bi-x-circle me-1"></i> Cancelar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="botones-permisos d-flex justify-content-end align-items-center gap-2 mt-4">
+            <button type="button" class="btn btn-warning px-3 py-1 text-dark" data-bs-toggle="modal" data-bs-target="#confirmarEdicion">
+                <i class="bi bi-pencil-square me-1"></i> Guardar cambios
+            </button>
+            <a asp-action="Index" asp-controller="Usuarios" class="btn btn-outline-secondary px-3 py-1 d-inline-flex align-items-center">
+                <i class="bi bi-x-circle me-1"></i> Cancelar
+            </a>
+        </div>
+
+
 </form>
 
 }

@@ -21,5 +21,8 @@ namespace ProyectAudi.ViewModels.Usuario
         // Auditoría
         public string? CREADO_POR { get; set; }
         public DateTime? FECHA_CREACION { get; set; }  // Nullable por seguridad
+
+        public string MODIFICADO_POR { get; set; } = string.Empty;
+
     }
 }

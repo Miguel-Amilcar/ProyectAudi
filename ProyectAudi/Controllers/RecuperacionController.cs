@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using ProyectAudi.Data;
 using ProyectAudi.Models;
 using ProyectAudi.Modelspartial;
+using ProyectAudi.Services;
 
 namespace ProyectAudi.Controllers
 {
@@ -145,6 +146,7 @@ namespace ProyectAudi.Controllers
             {
                 credencial.USUARIO_CONTRASENA_HASH = hash;
                 credencial.USUARIO_SALT = salt;
+                credencial.CONTRASENA_CIFRADA = PasswordEncryptor.Encrypt(model.NuevaContrasena);
                 credencial.PASSWORD_ULTIMO_CAMBIO = DateTime.Now;
             }
 
@@ -171,9 +173,11 @@ namespace ProyectAudi.Controllers
 
         private static byte[] HashearPassword(string password, byte[] salt)
         {
-            using var sha = SHA512.Create();
-            var combined = Encoding.UTF8.GetBytes(password).Concat(salt).ToArray();
+            using var sha = SHA256.Create(); // ✅ Consistente con login
+            var combined = salt.Concat(Encoding.UTF8.GetBytes(password)).ToArray();
             return sha.ComputeHash(combined);
         }
+
+
     }
 }

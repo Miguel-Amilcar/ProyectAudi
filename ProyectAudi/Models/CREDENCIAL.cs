@@ -49,5 +49,20 @@ public partial class CREDENCIAL
     [InverseProperty(nameof(USUARIO.CREDENCIAL))]
     public virtual USUARIO USUARIO { get; set; } = null!;
 
+    [Unicode(false)]
+    [StringLength(45)]
+    public string? ULTIMA_IP { get; set; }
+
+    [Unicode(false)]
+    [StringLength(512)]
+    public string? ULTIMO_USER_AGENT { get; set; }
+    public bool ELIMINADO { get; set; }
+    public string? ELIMINADO_POR { get; set; }
+    public DateTime? FECHA_ELIMINACION { get; set; }
+
+    public string? CONTRASENA_CIFRADA { get; set; }
+
+
+
 
 }

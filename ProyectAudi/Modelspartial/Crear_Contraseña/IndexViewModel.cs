@@ -14,5 +14,8 @@ namespace ProyectAudi.ViewModels.Crear_Contraseña
         public int INTENTOS_FALLIDOS { get; set; }
         public DateTime? BLOQUEADO_HASTA { get; set; }
         public DateTime? FECHA_ULTIMO_INTENTO { get; set; }
+        public string? ULTIMA_IP { get; set; }
+        public string? ULTIMO_USER_AGENT { get; set; }
+
     }
 }

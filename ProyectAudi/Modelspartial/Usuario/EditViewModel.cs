@@ -88,5 +88,19 @@ namespace ProyectAudi.ViewModels.Usuario
 
         // Auditoría (se asigna en el controlador)
         public string MODIFICADO_POR { get; set; } = string.Empty;
+
+        public string RolNombre { get; set; }
+        //public string NombreCompleto { get; internal set; }
+
+        public string NombreCompleto =>
+    string.Join(" ", new[] {
+        PRIMERNOMBRE,
+        SEGUNDONOMBRE,
+        TERCERNOMBRE,
+        PRIMERAPELLIDO,
+        SEGUNDOAPELLIDO,
+        APELLIDOCASADA
+    }.Where(n => !string.IsNullOrWhiteSpace(n)));
+
     }
 }

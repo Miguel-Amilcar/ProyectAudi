@@ -1,0 +1,62 @@
+﻿@using ProyectAudi.Modelspartial.Ver_contraseña
+@model List<VerContraseñaViewModel>
+
+@{
+    ViewData["Title"] = "Contraseñas en texto plano";
+    var rolId = Context.Session.GetInt32("RolId");
+}
+
+<h2 class="mb-4 text-primary">
+    <i class="bi bi-key-fill"></i> Contraseñas en texto plano
+</h2>
+
+@if (rolId != 1)
+{
+    <div class="alert alert-danger mt-4" role="alert">
+        <h4 class="alert-heading"><i class="bi bi-shield-lock-fill me-2"></i> Acceso denegado</h4>
+        <p>Solo los usuarios con rol de <strong>super administrador</strong> pueden ver contraseñas en texto plano.</p>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary mt-3">
+            <i class="bi bi-house-door"></i> Ir al inicio
+        </a>
+    </div>
+    return;
+}
+
+<div class="card shadow-sm mt-3">
+    <div class="card-header bg-primary text-white">
+        <strong>Listado general</strong>
+    </div>
+    <div class="card-body table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light text-center">
+                <tr>
+                    <th>Usuario</th>
+                    <th>Contraseña</th>
+                    <th>MFA</th>
+                    <th>Último cambio</th>
+                    <th>IP Último Login</th>
+                    <th>Navegador</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.USUARIO_NOMBRE</td>
+                        <td>
+                            <span class="text-monospace">@item.CONTRASENA</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge @(item.MFA_ENABLED ? "bg-success" : "bg-secondary")">
+                                @(item.MFA_ENABLED ? "Sí" : "No")
+                            </span>
+                        </td>
+                        <td>@item.PASSWORD_ULTIMO_CAMBIO?.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@(string.IsNullOrWhiteSpace(item.ULTIMA_IP) ? "—" : item.ULTIMA_IP)</td>
+                        <td>@(string.IsNullOrWhiteSpace(item.ULTIMO_USER_AGENT) ? "—" : item.ULTIMO_USER_AGENT)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
