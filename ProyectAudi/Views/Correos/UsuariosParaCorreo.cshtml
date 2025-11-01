@@ -1,0 +1,50 @@
+﻿@model List<ProyectAudi.Modelspartial.Correos.UsuarioCorreoViewModel>
+
+@{
+    ViewData["Title"] = "Usuarios para correo";
+    var usuarioActivo = ViewBag.UsuarioActivo as string ?? "Usuario desconocido";
+}
+
+
+<h2 class="mb-4 text-primary">
+    <i class="bi bi-person-lines-fill"></i> Usuarios registrados
+</h2>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-info text-white">
+        <strong>Listado de usuarios</strong>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Nombre completo</th>
+                    <th>Correo electrónico</th>
+                    <th>Rol</th>
+                    <th>Fecha de creación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model)
+                {
+                    <tr>
+                        <td>@u.NombreCompleto</td>
+                        <td>@u.Correo</td>
+                        <td>@u.Rol</td>
+                        <td>@u.FechaCreacion.ToString("g")</td>
+                        <td>
+                            <a asp-action="EnviarCorreo"
+                               asp-controller="Correos"
+                               asp-route-correoDestino="@u.Correo"
+                               asp-route-nombreCompleto="@u.NombreCompleto"
+                               class="btn btn-primary btn-sm">
+                                <i class="bi bi-envelope-fill me-1"></i> Enviar correo
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

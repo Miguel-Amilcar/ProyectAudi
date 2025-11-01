@@ -1,5 +1,4 @@
-﻿@* Parcial SIDEBAR — se renderiza desde _Layout *@
-@{
+﻿@{
     Layout = null;
 
     var ctrl = (ViewContext.RouteData.Values["controller"]
@@ -8,8 +7,11 @@
 
     var seguridadActiva = ctrl == "usuarios" || ctrl == "roles" || ctrl == "permisos" || ctrl == "rol_permisos";
     var credencialesActiva = ctrl == "crear_contraseñas" || ctrl == "ver_contraseñas";
+    var correosActiva = ctrl == "usuariosparacorreo" || ctrl == "redactarcorreo" || ctrl == "correosenviados";
+    var gestionCorreosActiva = correosActiva;
+    var configuracionActiva = ctrl == "configuracion" || gestionCorreosActiva;
 
-    var rolId = Context.Session.GetInt32("RolId"); // ✅ Leer el rol actual
+    var rolId = Context.Session.GetInt32("RolId");
 }
 
 <aside class="dashboard-sidebar" id="sidebar" role="navigation" aria-label="Navegación principal">
@@ -24,7 +26,6 @@
         <div class="nav-item submenu-toggle" onclick="toggleCredenciales()">
             <i class="bi bi-key"></i><span>Credenciales</span>
         </div>
-
         <ul id="credenciales-submenu" class="submenu @(credencialesActiva ? "" : "oculto")">
             <li>
                 <a asp-controller="Crear_Contraseñas" asp-action="Index"
@@ -52,7 +53,6 @@
         <div class="nav-item submenu-toggle" onclick="toggleSeguridad()">
             <i class="bi bi-shield-lock"></i><span>Gestión de Seguridad</span>
         </div>
-
         <ul id="seguridad-submenu" class="submenu @(seguridadActiva ? "" : "oculto")">
             <li>
                 <a asp-controller="Usuarios" asp-action="Index" class="nav-item @(ctrl == "usuarios" ? "is-active" : "")">
@@ -75,11 +75,37 @@
             }
         </ul>
 
-        <a asp-controller="Configuracion" asp-action="Index"
-           class="nav-item @(ctrl == "configuracion" ? "is-active" : "")"
-           aria-current="@(ctrl == "configuracion" ? "page" : null)">
-            <i class="bi bi-gear"></i><span>Configuración</span>
-        </a>
+        @if (rolId == 1)
+        {
+            <div class="nav-item submenu-toggle" onclick="toggleConfiguracion()">
+                <i class="bi bi-gear"></i><span>Configuración</span>
+            </div>
+            <ul id="configuracion-submenu" class="submenu @(configuracionActiva ? "" : "oculto")">
+                <li class="nav-item submenu-toggle" onclick="toggleGestionCorreos()">
+                    <i class="bi bi-envelope"></i><span>Notificar cambios por correo</span>
+                </li>
+                <ul id="gestion-correos-submenu" class="submenu @(gestionCorreosActiva ? "" : "oculto")">
+                    <li>
+                        <a asp-controller="Correos" asp-action="UsuariosParaCorreo"
+                           class="nav-item @(ctrl == "usuariosparacorreo" ? "is-active" : "")">
+                            <i class="bi bi-person-lines-fill"></i><span>Usuarios para correo</span>
+                        </a>
+                    </li>
+      @*               <li>
+                        <a asp-controller="Correos" asp-action="EnviarCorreo"
+                           class="nav-item @(ctrl == "redactarcorreo" ? "is-active" : "")">
+                            <i class="bi bi-pencil"></i><span>Redactar correo</span>
+                        </a>
+                    </li> *@
+                    <li>
+                        <a asp-controller="Correos" asp-action="CorreosEnviados"
+                           class="nav-item @(ctrl == "correosenviados" ? "is-active" : "")">
+                            <i class="bi bi-send-check"></i><span>Correos enviados</span>
+                        </a>
+                    </li>
+                </ul>
+            </ul>
+        }
 
         <a asp-controller="Ayuda" asp-action="Index"
            class="nav-item @(ctrl == "ayuda" ? "is-active" : "")"
@@ -96,5 +122,13 @@
 
     function toggleCredenciales() {
         document.getElementById("credenciales-submenu").classList.toggle("oculto");
+    }
+
+    function toggleConfiguracion() {
+        document.getElementById("configuracion-submenu").classList.toggle("oculto");
+    }
+
+    function toggleGestionCorreos() {
+        document.getElementById("gestion-correos-submenu").classList.toggle("oculto");
     }
 </script>

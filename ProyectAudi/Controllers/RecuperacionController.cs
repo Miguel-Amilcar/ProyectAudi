@@ -10,6 +10,7 @@ using ProyectAudi.Data;
 using ProyectAudi.Models;
 using ProyectAudi.Modelspartial;
 using ProyectAudi.Services;
+using ProyectAudi.Modelspartial.Correos;
 
 namespace ProyectAudi.Controllers
 {
@@ -24,9 +25,11 @@ namespace ProyectAudi.Controllers
             _email = email;
         }
 
+        private bool EsSuperUsuario()
+        {
+            return HttpContext.Session.GetInt32("RolId") == 1;
+        }
 
-
-        // GET: Recuperacion/SolicitarToken
         public IActionResult SolicitarToken()
         {
             var bloqueo = HttpContext.Session.GetString("RecuperacionBloqueada");
@@ -38,11 +41,9 @@ namespace ProyectAudi.Controllers
             return View();
         }
 
-        // POST: Recuperacion/EnviarToken
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EnviarToken(SolicitarTokenViewModel model)
-
         {
             if (!ModelState.IsValid)
                 return View("SolicitarToken", model);
@@ -83,21 +84,16 @@ namespace ProyectAudi.Controllers
 
             await _context.SaveChangesAsync();
             await _email.EnviarTokenAsync(model.Correo, token);
-            // Simulación de envío de correo
-            Console.WriteLine($"Token enviado a {model.Correo}: {token}");
 
             TempData["Correo"] = model.Correo;
             return RedirectToAction("IngresarToken");
-
         }
 
-        // GET: Recuperacion/IngresarToken
         public IActionResult IngresarToken()
         {
             return View();
         }
 
-        // POST: Recuperacion/ValidarTokenYActualizarPassword
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ValidarTokenYActualizarPassword(IngresarTokenViewModel model)
@@ -160,7 +156,6 @@ namespace ProyectAudi.Controllers
 
             TempData["Mensaje"] = "Contraseña actualizada correctamente. Puedes iniciar sesión.";
             return RedirectToAction("Index", "Credenciales", new { area = "Modelspartial" });
-
         }
 
         private static byte[] GenerarSalt()
@@ -173,11 +168,10 @@ namespace ProyectAudi.Controllers
 
         private static byte[] HashearPassword(string password, byte[] salt)
         {
-            using var sha = SHA256.Create(); // ✅ Consistente con login
+            using var sha = SHA256.Create();
             var combined = salt.Concat(Encoding.UTF8.GetBytes(password)).ToArray();
             return sha.ComputeHash(combined);
         }
-
-
+        
     }
 }

@@ -1,29 +1,103 @@
 ﻿@model ProyectAudi.ViewModels.Roles.DeleteViewModel
+@using ProyectAudi.Services
 
 @{
     ViewData["Title"] = "Eliminar Rol";
+    var permisos = ViewBag.Permisos as HashSet<string> ?? new HashSet<string>();
 }
 
-<h2>¿Estás seguro que deseas eliminar este rol?</h2>
+@if (permisos.Contains("ELIMINAR"))
+{
+    <h2 class="mb-4 text-danger">
+        <i class="bi bi-trash-fill"></i> Confirmación de eliminación
+    </h2>
 
-<div>
-    <dl class="row">
-        <dt class="col-sm-3">Nombre</dt>
-        <dd class="col-sm-9">@Model.ROL_NOMBRE</dd>
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-danger text-white">
+            <strong><i class="bi bi-shield-lock-fill me-1"></i> Datos del rol</strong>
+        </div>
+        <div class="card-body">
+            <div class="row gy-3">
+                <div class="col-md-6">
+                    <strong>ID del rol:</strong><br />
+                    <span class="text-muted">@Model.ROL_ID</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Nombre del rol:</strong><br />
+                    <span class="text-muted">@Model.ROL_NOMBRE</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Descripción:</strong><br />
+                    <span class="text-muted">@(!string.IsNullOrWhiteSpace(Model.ROL_DESCRIPCION) ? Model.ROL_DESCRIPCION : "—")</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Usuarios asociados:</strong><br />
+                    <span class="badge bg-info text-dark">@Model.CantidadUsuarios</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Permisos asignados:</strong><br />
+                    <span class="badge bg-secondary">@Model.CantidadPermisos</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <dt class="col-sm-3">Descripción</dt>
-        <dd class="col-sm-9">@Model.ROL_DESCRIPCION</dd>
+    <div class="modal fade" id="confirmarEliminacionRol" tabindex="-1" aria-labelledby="confirmarEliminacionRolLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-danger text-white rounded-top-4">
+                    <h5 class="modal-title d-flex align-items-center" id="confirmarEliminacionRolLabel">
+                        <i class="bi bi-trash-fill me-2 fs-4"></i>
+                        Confirmar eliminación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
 
-        <dt class="col-sm-3">Creado por</dt>
-        <dd class="col-sm-9">@Model.CREADO_POR</dd>
+                <div class="modal-body px-4 py-3">
+                    <div class="alert alert-danger text-center mb-4" role="alert">
+                        <i class="bi bi-exclamation-circle-fill fs-5 text-danger mb-2 d-block"></i>
+                        <div>
+                            ¿Estás seguro que querés eliminar el rol <strong>@Model.ROL_NOMBRE</strong>?<br />
+                            <small class="text-muted">Esta acción lo marcará como <strong>inactivo</strong> y desvinculará sus permisos.</small>
+                        </div>
+                    </div>
 
-        <dt class="col-sm-3">Fecha creación</dt>
-        <dd class="col-sm-9">@Model.FECHA_CREACION.ToShortDateString()</dd>
-    </dl>
-</div>
+                    <form asp-action="Delete" asp-controller="Roles" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="ROL_ID" />
 
-<form asp-action="DeleteConfirmed">
-    <input type="hidden" asp-for="ROL_ID" />
-    <button type="submit" class="btn btn-danger">Eliminar</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-</form>
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-danger w-100">
+                                <i class="bi bi-trash-fill me-1"></i> Sí, eliminar
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">
+                                <i class="bi bi-x-circle me-1"></i> Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="botones-permisos d-flex justify-content-end align-items-center gap-2 mt-4">
+        <button type="button" class="btn btn-danger px-3 py-1" data-bs-toggle="modal" data-bs-target="#confirmarEliminacionRol">
+            <i class="bi bi-trash-fill me-1"></i> Eliminar rol
+        </button>
+        <a asp-action="Index" asp-controller="Roles" class="btn btn-outline-secondary px-3 py-1 d-inline-flex align-items-center">
+            <i class="bi bi-x-circle me-1"></i> Cancelar
+        </a>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-shield-lock"></i> No tenés permiso para eliminar roles.
+    </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

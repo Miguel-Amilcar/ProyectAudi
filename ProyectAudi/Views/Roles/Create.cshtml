@@ -1,66 +1,63 @@
 ﻿@model ProyectAudi.ViewModels.Roles.CreateViewModel
+@using ProyectAudi.Services
 
 @{
     ViewData["Title"] = "Crear Rol";
+    var permisos = ViewBag.Permisos as HashSet<string> ?? new HashSet<string>();
 }
 
-<h2>Crear nuevo Rol</h2>
-
-<!-- Vista previa de valores booleanos solo si el modelo está inicializado -->
-@if (Model != null && Model.ES_ADMINISTRATIVO.HasValue && Model.ESTADO.HasValue)
+@if (!ViewData.ModelState.IsValid)
 {
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Administrativo</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>@(Model.ES_ADMINISTRATIVO == true ? "Sí" : "No")</td>
-                <td>@(Model.ESTADO == true ? "Activo" : "Inactivo")</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@error.ErrorMessage</div>
+        }
+    </div>
 }
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="ROL_NOMBRE"></label>
-        <input asp-for="ROL_NOMBRE" class="form-control" />
-        <span asp-validation-for="ROL_NOMBRE" class="text-danger"></span>
-    </div>
+@if (permisos.Contains("CREAR"))
+{
+    <h2 class="mb-4 text-primary"><i class="bi bi-person-plus-fill"></i> Crear nuevo rol</h2>
 
-    <div class="form-group">
-        <label asp-for="ROL_DESCRIPCION"></label>
-        <textarea asp-for="ROL_DESCRIPCION" class="form-control"></textarea>
-        <span asp-validation-for="ROL_DESCRIPCION" class="text-danger"></span>
-    </div>
+    @using (Html.BeginForm("Create", "Roles", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
 
-    <div class="form-group">
-        <label asp-for="ES_ADMINISTRATIVO">¿Es administrativo?</label>
-        <select asp-for="ES_ADMINISTRATIVO" class="form-control" required>
-            <option value="">-- Selecciona una opción --</option>
-            <option value="true">Sí</option>
-            <option value="false">No</option>
-        </select>
-        <span asp-validation-for="ES_ADMINISTRATIVO" class="text-danger"></span>
-    </div>
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <strong>Datos del rol</strong>
+            </div>
+            <div class="card-body row g-3">
+                <div class="col-md-6">
+                    @Html.LabelFor(m => m.ROL_NOMBRE, new { @class = "form-label" })
+                    @Html.TextBoxFor(m => m.ROL_NOMBRE, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.ROL_NOMBRE, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-6">
+                    @Html.LabelFor(m => m.ROL_DESCRIPCION, new { @class = "form-label" })
+                    @Html.TextBoxFor(m => m.ROL_DESCRIPCION, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.ROL_DESCRIPCION, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="ESTADO">Estado</label>
-        <select asp-for="ESTADO" class="form-control" required>
-            <option value="">-- Selecciona estado --</option>
-            <option value="true">Activo</option>
-            <option value="false">Inactivo</option>
-        </select>
-        <span asp-validation-for="ESTADO" class="text-danger"></span>
+        <div class="botones-permisos d-flex justify-content-end align-items-center gap-2 mt-4">
+            <button type="submit" class="btn btn-success px-3 py-1">
+                <i class="bi bi-check-circle-fill me-1"></i> Guardar rol
+            </button>
+            <a asp-action="Index" asp-controller="Roles" class="btn btn-outline-secondary px-3 py-1 d-inline-flex align-items-center">
+                <i class="bi bi-x-circle me-1"></i> Cancelar
+            </a>
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-shield-lock"></i> No tenés permiso para crear roles.
     </div>
-
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-</form>
+}
 
 @section Scripts {
     @{

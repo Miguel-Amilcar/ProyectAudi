@@ -1,34 +1,93 @@
 ﻿@model ProyectAudi.ViewModels.Roles.EditViewModel
+@using ProyectAudi.Services
 
 @{
-    ViewData["Title"] = "Editar Rol";
+    ViewData["Title"] = "Editar rol";
+    var permisos = ViewBag.Permisos as HashSet<string> ?? new HashSet<string>();
 }
 
-<h2>Editar Rol</h2>
+@if (permisos.Contains("EDITAR"))
+{
+    <h2 class="mb-4 text-primary">
+        <i class="bi bi-pencil-square"></i> Editar rol
+    </h2>
 
-<form asp-action="Edit">
-    <input type="hidden" asp-for="ROL_ID" />
+    <form asp-action="Edit" method="post" id="formEditarRol">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ROL_ID" />
 
-    <div class="form-group">
-        <label asp-for="ROL_NOMBRE"></label>
-        <input asp-for="ROL_NOMBRE" class="form-control" />
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-primary text-white">
+                <strong><i class="bi bi-shield-lock-fill me-1"></i> Información del rol</strong>
+            </div>
+            <div class="card-body">
+                <div class="row gy-3">
+                    <div class="col-md-6">
+                        <label asp-for="ROL_NOMBRE" class="form-label">Nombre del rol</label>
+                        <input asp-for="ROL_NOMBRE" class="form-control" />
+                        <span asp-validation-for="ROL_NOMBRE" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ROL_DESCRIPCION" class="form-label">Descripción</label>
+                        <input asp-for="ROL_DESCRIPCION" class="form-control" />
+                        <span asp-validation-for="ROL_DESCRIPCION" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="botones-permisos d-flex justify-content-end align-items-center gap-2 mt-4">
+            <button type="button" class="btn btn-warning px-3 py-1 text-dark" data-bs-toggle="modal" data-bs-target="#confirmarEdicionRol">
+                <i class="bi bi-pencil-square me-1"></i> Guardar cambios
+            </button>
+            <a asp-action="Index" asp-controller="Roles" class="btn btn-outline-secondary px-3 py-1 d-inline-flex align-items-center">
+                <i class="bi bi-x-circle me-1"></i> Cancelar
+            </a>
+        </div>
+    </form>
+
+    <!-- Modal de confirmación -->
+    <div class="modal fade" id="confirmarEdicionRol" tabindex="-1" aria-labelledby="confirmarEdicionRolLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-warning text-dark rounded-top-4">
+                    <h5 class="modal-title d-flex align-items-center" id="confirmarEdicionRolLabel">
+                        <i class="bi bi-pencil-square me-2 fs-4"></i>
+                        Confirmar edición
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body px-4 py-3">
+                    <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                        <i class="bi bi-info-circle-fill me-2 fs-5 text-warning"></i>
+                        <div>
+                            ¿Estás seguro que querés guardar los cambios para el rol <strong>@Model.ROL_NOMBRE</strong>?
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer px-4 py-3 border-top-0 d-flex flex-wrap justify-content-end gap-3">
+                    <button type="button" class="btn btn-warning px-4 text-dark" onclick="document.getElementById('formEditarRol').submit();">
+                        <i class="bi bi-check-circle-fill me-1"></i> Sí, guardar
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i> Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="ROL_DESCRIPCION"></label>
-        <input asp-for="ROL_DESCRIPCION" class="form-control" />
+}
+else
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-shield-lock"></i> No tenés permiso para editar roles.
     </div>
+}
 
-    <div class="form-group">
-        <label asp-for="ES_ADMINISTRATIVO"></label>
-        <input asp-for="ES_ADMINISTRATIVO" type="checkbox" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ESTADO"></label>
-        <input asp-for="ESTADO" type="checkbox" />
-    </div>
-
-    <button type="submit" class="btn btn-success">Actualizar</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

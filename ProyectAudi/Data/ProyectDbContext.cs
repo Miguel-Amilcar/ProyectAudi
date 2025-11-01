@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using ProyectAudi.Models;
 
+
 namespace ProyectAudi.Data
 {
     public partial class ProyectDbContext : DbContext
@@ -21,12 +22,25 @@ namespace ProyectAudi.Data
         public virtual DbSet<USUARIO> USUARIO { get; set; }
         public virtual DbSet<VW_Auditoria_Global> VW_Auditoria_Global { get; set; }
         public virtual DbSet<TOKEN_RECUPERACION> TOKEN_RECUPERACION { get; set; }
+        public DbSet<CORREO_ENVIADO> CORREO_ENVIADO { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseSqlServer("Name=DefaultConnection");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<CORREO_ENVIADO>(entity =>
+            {
+                entity.HasKey(e => e.CORREO_ID);
+
+                entity.HasOne(e => e.USUARIO_REMITENTE)
+                    .WithMany(u => u.CorreosEnviados) // o .WithMany() si no querés la colección inversa
+                    .HasForeignKey(e => e.ENVIADO_POR_ID)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_CORREO_ENVIADO_USUARIO");
+            });
+
 
             modelBuilder.Entity<CREDENCIAL>(entity =>
             {
@@ -56,15 +70,21 @@ namespace ProyectAudi.Data
             modelBuilder.Entity<ROL>(entity =>
             {
                 entity.ToTable(tb => tb.HasTrigger("TRG_ROL_AUDITORIA"));
+                entity.Property(e => e.FECHA_CREACION).HasDefaultValueSql("(getdate())");
+            });
 
+            modelBuilder.Entity<USUARIO>(entity =>
+            {
+                entity.ToTable(tb => tb.HasTrigger("TRG_USUARIO_AUDITORIA_COMPLETA"));
+                entity.Property(e => e.ESTADO_TINY).HasDefaultValue((byte)1);
                 entity.Property(e => e.FECHA_CREACION).HasDefaultValueSql("(getdate())");
 
-                modelBuilder.Entity<USUARIO>()
-                    .HasOne(u => u.ROL)
+                entity.HasOne(u => u.ROL)
                     .WithMany(r => r.USUARIOS)
                     .HasForeignKey(u => u.ROL_ID)
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
+
 
             modelBuilder.Entity<ROL_PERMISO>(entity =>
             {

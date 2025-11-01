@@ -119,11 +119,13 @@
                     <input asp-for="USUARIO_CORREO" type="email" class="form-control" />
                     <span asp-validation-for="USUARIO_CORREO" class="text-danger"></span>
                 </div>
-                <div class="col-md-6">
-                    <label for="ROL_ID" class="form-label">Rol</label>
-                    <select asp-for="ROL_ID" asp-items="ViewBag.Roles" class="form-select"></select>
-                    <span asp-validation-for="ROL_ID" class="text-danger"></span>
-                </div>
+                    @if (ViewBag.EsSuperAdmin == true)
+                    {
+                        <div class="form-group">
+                            <label for="ROL_ID">Rol</label>
+                            <select asp-for="ROL_ID" asp-items="ViewBag.Roles" class="form-control"></select>
+                        </div>
+                    }
                 <div class="col-md-6">
                     <label class="form-label">Fotografía</label>
                     <input type="file" name="FotografiaFile" class="form-control" accept="image/*" />

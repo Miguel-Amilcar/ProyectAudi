@@ -1,26 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using ProyectAudi.Models;
-
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ProyectAudi.ViewModels.Roles
 {
     public class EditViewModel
     {
+        [Required]
         public int ROL_ID { get; set; }
 
-        [Required]
-        [StringLength(100)]
+        [Required(ErrorMessage = "El nombre del rol es obligatorio.")]
+        [StringLength(100, ErrorMessage = "El nombre no puede exceder los 100 caracteres.")]
+        [Display(Name = "Nombre del Rol")]
         public string ROL_NOMBRE { get; set; } = string.Empty;
 
-        [StringLength(255)]
+        [StringLength(255, ErrorMessage = "La descripción no puede exceder los 255 caracteres.")]
+        [Display(Name = "Descripción")]
         public string? ROL_DESCRIPCION { get; set; }
-
-        public bool ES_ADMINISTRATIVO { get; set; }
-        public bool ESTADO { get; set; }
-
-        public string MODIFICADO_POR { get; set; } = string.Empty;
-        public DateTime FECHA_MODIFICACION { get; set; }
     }
 }

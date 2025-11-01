@@ -69,5 +69,9 @@ public partial class USUARIO
     public virtual ROL ROL { get; set; } = null!;
     public virtual CREDENCIAL CREDENCIAL { get; set; } = null!;
     public virtual TOKEN_RECUPERACION TOKEN_RECUPERACION { get; set; } = null!;
+
+
+    public ICollection<CORREO_ENVIADO> CorreosEnviados { get; set; }
+
 }
 

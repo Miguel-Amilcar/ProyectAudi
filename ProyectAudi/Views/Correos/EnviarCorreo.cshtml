@@ -1,0 +1,75 @@
+﻿@model ProyectAudi.Modelspartial.Correos.RedactarCorreoViewModel
+
+@{
+    ViewData["Title"] = "Enviar correo";
+    var usuarioActivo = ViewBag.UsuarioActivo as string ?? "Usuario desconocido";
+}
+
+
+<h2 class="mb-4 text-primary">
+    <i class="bi bi-envelope-fill"></i> Enviar correo
+</h2>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">
+        <i class="bi bi-check-circle me-1"></i> @TempData["Mensaje"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle me-1"></i> @TempData["Error"]
+    </div>
+}
+
+@using (Html.BeginForm("EnviarCorreo", "Correos", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.NombreCompleto)
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-info text-white">
+            <strong>Datos del mensaje</strong>
+        </div>
+        <div class="card-body row g-3">
+            <div class="col-md-12">
+                <label class="form-label">Nombre del destinatario</label>
+                <div class="form-control-plaintext">@Model.NombreCompleto</div>
+            </div>
+
+            <div class="col-md-12">
+                @Html.LabelFor(m => m.Destinatario, new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.Destinatario, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+
+            <div class="col-md-12">
+                @Html.LabelFor(m => m.Asunto, new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.Asunto, new { @class = "form-control", placeholder = "Motivo del mensaje" })
+                @Html.ValidationMessageFor(m => m.Asunto, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-12">
+                @Html.LabelFor(m => m.Cuerpo, new { @class = "form-label" })
+                @Html.TextAreaFor(m => m.Cuerpo, 8, 0, new { @class = "form-control", placeholder = "Escribe tu mensaje aquí..." })
+                @Html.ValidationMessageFor(m => m.Cuerpo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-send-fill me-1"></i> Enviar
+        </button>
+        <a asp-action="UsuariosParaCorreo" asp-controller="Correos" class="btn btn-outline-secondary">
+            <i class="bi bi-x-circle me-1"></i> Cancelar
+        </a>
+    </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

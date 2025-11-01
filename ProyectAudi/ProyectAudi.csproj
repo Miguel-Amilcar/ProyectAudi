@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Email\CorreoPersonalizado.cshtml" />
     <Content Remove="wwwroot\js\sidebar.js" />
   </ItemGroup>
 
@@ -38,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Views\Email\CorreoPersonalizado.cshtml" />
     <None Include="wwwroot\js\sidebar.js" />
   </ItemGroup>
 

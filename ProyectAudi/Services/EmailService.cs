@@ -2,6 +2,8 @@
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using MimeKit;
+using ProyectAudi.Modelspartial.Correos;
 using ProyectAudi.Services;
 
 
@@ -40,6 +42,39 @@ public class EmailService
 
         // Envía el correo
         await smtp.SendMailAsync(mensaje);
+
     }
+
+
+    public async Task EnviarCorreoPersonalizadoAsync(RedactarCorreoViewModel model)
+    {
+        // Renderiza la plantilla Razor con el modelo
+        var renderer = new RazorViewRenderer();
+        var htmlBody = await renderer.RenderAsync("Email/CorreoPersonalizado.cshtml", model);
+
+        // Configura el cliente SMTP
+        var settings = _config.GetSection("EmailSettings");
+        var smtp = new SmtpClient(settings["Host"], int.Parse(settings["Port"]))
+        {
+            Credentials = new NetworkCredential(settings["User"], settings["Password"]),
+            EnableSsl = bool.Parse(settings["EnableSsl"])
+        };
+
+        // Construye el mensaje
+        var mensaje = new MailMessage
+        {
+            From = new MailAddress(settings["User"], "Soporte ProyectAudi"),
+            Subject = model.Asunto,
+            Body = htmlBody,
+            IsBodyHtml = true
+        };
+
+        mensaje.To.Add(model.Destinatario);
+
+        // Envía el correo
+        await smtp.SendMailAsync(mensaje);
+    }
+
+
 
 }

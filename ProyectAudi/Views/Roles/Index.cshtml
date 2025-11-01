@@ -1,37 +1,91 @@
-﻿@model IEnumerable<ProyectAudi.ViewModels.Roles.IndexViewModel>
+﻿@model List<ProyectAudi.ViewModels.Roles.IndexViewModel>
+@using ProyectAudi.Services
 
-<h2>Listado de Roles</h2>
+@{
+    ViewData["Title"] = "Listado de Roles";
+    var permisos = ViewBag.Permisos as HashSet<string> ?? new HashSet<string>();
+}
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Administrativo</th>
-            <th>Estado</th>
-            <th>Creado por</th>
-            <th>Fecha creación</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var rol in Model)
-        {
-            <tr>
-                <td>@rol.ROL_NOMBRE</td>
-                <td>@rol.ROL_DESCRIPCION</td>
-                <td>@(rol.ES_ADMINISTRATIVO ? "Sí" : "No")</td>
-                <td>@(rol.ESTADO ? "Activo" : "Inactivo")</td>
-                <td>@rol.CREADO_POR</td>
-                <td>@rol.FECHA_CREACION.ToShortDateString()</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@rol.ROL_ID">Detalles</a> |
-                    <a asp-action="Edit" asp-route-id="@rol.ROL_ID">Editar</a> |
-                    <a asp-action="Delete" asp-route-id="@rol.ROL_ID">Eliminar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<h2 class="mb-4 text-primary"><i class="bi bi-shield-lock"></i> Roles registrados</h2>
 
-<a asp-action="Create" class="btn btn-primary">Crear nuevo rol</a>
+@if (permisos.Any())
+{
+    <div class="alert alert-info">
+        <strong>Permisos activos para este rol:</strong>
+        <ul class="mb-0">
+            @foreach (var p in permisos.OrderBy(p => p))
+            {
+                <li>@p</li>
+            }
+        </ul>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">Este rol no tiene permisos asignados o no se detectó el rol.</div>
+}
+
+<div class="card shadow-sm mt-3">
+    <div class="card-header bg-primary text-white">
+        <strong>Listado general</strong>
+    </div>
+    <div class="card-body table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-header-azul text-center">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre del Rol</th>
+                    <th>Descripción</th>
+                    <th>Fecha de creación</th>
+                    <th>Usuarios asociados</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var rol in Model)
+                {
+                    <tr>
+                        <td>@rol.ROL_ID</td>
+                        <td>@rol.ROL_NOMBRE</td>
+                        <td>@(string.IsNullOrWhiteSpace(rol.ROL_DESCRIPCION) ? "—" : rol.ROL_DESCRIPCION)</td>
+                        <td>@rol.FECHA_CREACION.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="text-center">
+                            <span class="badge bg-info">@rol.CantidadUsuarios</span>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                @if (PermisoService.Tiene(permisos, "VER"))
+                                {
+                                    <a asp-action="Details" asp-route-id="@rol.ROL_ID" class="btn btn-outline-warning btn-sm" title="Ver detalles">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                }
+
+                                @if (PermisoService.Tiene(permisos, "EDITAR"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@rol.ROL_ID" class="btn btn-outline-primary btn-sm" title="Editar rol">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                }
+
+                                @if (PermisoService.Tiene(permisos, "ELIMINAR"))
+                                {
+                                    <a asp-action="Delete" asp-route-id="@rol.ROL_ID" class="btn btn-outline-danger btn-sm" title="Eliminar rol">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if (permisos.Contains("CREAR"))
+{
+    <a asp-action="Create" class="btn btn-primary mt-3">
+        <i class="bi bi-person-plus-fill"></i> Crear nuevo rol
+    </a>
+}

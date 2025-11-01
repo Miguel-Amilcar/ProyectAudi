@@ -23,7 +23,7 @@ namespace ProyectAudi.Models
         public string CREADO_POR { get; set; } = string.Empty;
 
         [Required]
-        public DateTime FECHA_CREACION { get; set; } = DateTime.UtcNow;
+        public DateTime FECHA_CREACION { get; set; } = DateTime.Now;
 
         // ✅ Propiedad de navegación que faltaba
         public virtual ICollection<USUARIO> USUARIOS { get; set; } = new List<USUARIO>();

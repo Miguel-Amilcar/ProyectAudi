@@ -109,11 +109,14 @@
                 @Html.TextBoxFor(m => m.USUARIO_CORREO, new { @class = "form-control", type = "email" })
                 @Html.ValidationMessageFor(m => m.USUARIO_CORREO, "", new { @class = "text-danger" })
             </div>
-            <div class="col-md-6">
-                @Html.Label("ROL_ID", "Rol", new { @class = "form-label" })
-                @Html.DropDownListFor(m => m.ROL_ID, ViewBag.Roles as List<SelectListItem>, new { @class = "form-select" })
-                @Html.ValidationMessageFor(m => m.ROL_ID, "", new { @class = "text-danger" })
-            </div>
+                @if (ViewBag.EsSuperAdmin == true)
+                {
+                    <div class="col-md-6">
+                        @Html.Label("ROL_ID", "Rol", new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.ROL_ID, ViewBag.Roles as List<SelectListItem>, new { @class = "form-select" })
+                        @Html.ValidationMessageFor(m => m.ROL_ID, "", new { @class = "text-danger" })
+                    </div>
+                }
             <div class="col-md-6">
                 <label class="form-label">Fotografía</label>
                 <input type="file" name="FotografiaFile" class="form-control" accept="image/*" />

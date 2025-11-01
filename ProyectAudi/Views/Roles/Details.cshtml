@@ -1,38 +1,88 @@
 ﻿@model ProyectAudi.ViewModels.Roles.DetailsViewModel
+@using ProyectAudi.Services
 
 @{
     ViewData["Title"] = "Detalles del Rol";
+    var permisos = ViewBag.Permisos as HashSet<string> ?? new HashSet<string>();
 }
 
-<h2>Detalles del Rol</h2>
+<h2 class="mb-4 text-primary">
+    <i class="bi bi-shield-lock-fill"></i> Detalles del Rol
+</h2>
 
-<div>
-    <dl class="row">
-        <dt class="col-sm-3">Nombre</dt>
-        <dd class="col-sm-9">@Model.ROL_NOMBRE</dd>
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-primary text-white">
+        <strong><i class="bi bi-info-circle-fill me-1"></i> Información general</strong>
+    </div>
+    <div class="card-body">
+        <div class="row gy-3">
+            <div class="col-md-6">
+                <strong>ID del rol:</strong><br />
+                <span class="text-muted">@Model.ROL_ID</span>
+            </div>
+            <div class="col-md-6">
+                <strong>Nombre del rol:</strong><br />
+                <span class="text-muted">@Model.ROL_NOMBRE</span>
+            </div>
+            <div class="col-md-6">
+                <strong>Descripción:</strong><br />
+                <span class="text-muted">@(!string.IsNullOrWhiteSpace(Model.ROL_DESCRIPCION) ? Model.ROL_DESCRIPCION : "—")</span>
+            </div>
+            <div class="col-md-6">
+                <strong>Fecha de creación:</strong><br />
+                <span class="text-muted">@Model.FECHA_CREACION.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+            <div class="col-md-6">
+                <strong>Creado por:</strong><br />
+                <span class="text-muted">@Model.CREADO_POR</span>
+            </div>
+        </div>
 
-        <dt class="col-sm-3">Descripción</dt>
-        <dd class="col-sm-9">@Model.ROL_DESCRIPCION</dd>
+        <hr class="my-4" />
 
-        <dt class="col-sm-3">Administrativo</dt>
-        <dd class="col-sm-9">@Model.ES_ADMINISTRATIVO</dd>
-
-        <dt class="col-sm-3">Estado</dt>
-        <dd class="col-sm-9">@Model.ESTADO</dd>
-
-        <dt class="col-sm-3">Creado por</dt>
-        <dd class="col-sm-9">@Model.CREADO_POR</dd>
-
-        <dt class="col-sm-3">Fecha creación</dt>
-        <dd class="col-sm-9">@Model.FECHA_CREACION.ToShortDateString()</dd>
-
-        <dt class="col-sm-3">Modificado por</dt>
-        <dd class="col-sm-9">@Model.MODIFICADO_POR</dd>
-
-        <dt class="col-sm-3">Fecha modificación</dt>
-        <dd class="col-sm-9">@Model.FECHA_MODIFICACION?.ToShortDateString()</dd>
-    </dl>
+        <div class="row gy-3">
+            <div class="col-md-6">
+                <strong>Usuarios asociados:</strong><br />
+                @if (Model.UsuariosAsociados.Any())
+                {
+                    <ul class="text-muted">
+                        @foreach (var usuario in Model.UsuariosAsociados)
+                        {
+                            <li>@usuario</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <span class="text-muted">No hay usuarios asignados a este rol.</span>
+                }
+            </div>
+            <div class="col-md-6">
+                <strong>Permisos asignados:</strong><br />
+                @if (Model.PermisosAsignados.Any())
+                {
+                    <ul class="text-muted">
+                        @foreach (var permiso in Model.PermisosAsignados)
+                        {
+                            <li>@permiso</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <span class="text-muted">Este rol no tiene permisos asignados.</span>
+                }
+            </div>
+        </div>
+    </div>
 </div>
 
-<a asp-action="Edit" asp-route-id="@Model.ROL_ID" class="btn btn-warning">Editar</a>
-<a asp-action="Index" class="btn btn-secondary">Volver</a>
+@if (permisos.Contains("EDITAR"))
+{
+    <a asp-action="Edit" asp-route-id="@Model.ROL_ID" class="btn btn-warning">
+        <i class="bi bi-pencil-square"></i> Editar
+    </a>
+}
+<a asp-action="Index" class="btn btn-secondary">
+    <i class="bi bi-arrow-left-circle"></i> Volver
+</a>

@@ -1,0 +1,37 @@
+﻿@model ProyectAudi.Modelspartial.Correos.RedactarCorreoViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@Model.Asunto</title>
+</head>
+<body style="background-color: #f4f7fc; font-family: 'Segoe UI', sans-serif; color: #1f2d5a; padding: 40px;">
+    <div style="background-color: #ffffff; border-radius: 18px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); padding: 40px; max-width: 580px; margin: auto; border: 1px solid #dbe3f0;">
+
+        <!-- Encabezado -->
+        <div style="text-align: center; margin-bottom: 32px;">
+            <h2 style="color: #2a4d8f; font-size: 1.8rem; margin: 0;">📧 @Model.Asunto</h2>
+            <p style="font-size: 0.9rem; color: #777;">@DateTime.Now.ToString("dddd, dd MMMM yyyy")</p>
+        </div>
+
+        <!-- Saludo -->
+        <p style="font-size: 1rem; margin-bottom: 14px;">Hola <strong>@Model.NombreCompleto</strong>,</p>
+        <p style="font-size: 1rem; margin-bottom: 22px;">
+            Has recibido un nuevo mensaje desde el sistema de administración de <strong>ProyectAudi</strong>. A continuación te compartimos el contenido:
+        </p>
+
+        <!-- Contenido del mensaje -->
+        <div style="font-size: 1rem; color: #1f2d5a; background-color: #f0f4ff; padding: 20px; border-radius: 12px; margin-bottom: 32px; border: 1px solid #cbd6ee;">
+            @Model.Cuerpo
+        </div>
+
+        <!-- Firma -->
+        <hr style="border: none; border-top: 1px solid #dbe3f0; margin-bottom: 24px;" />
+        <p style="font-size: 0.9rem; color: #777; text-align: center;">
+            Este mensaje fue enviado automáticamente por el sistema de <strong>ProyectAudi</strong>.<br />
+            Si tenés dudas o necesitás asistencia, escribinos a <a href="mailto:soporte@proyectaudi.com">soporte@proyectaudi.com</a>.
+        </p>
+    </div>
+</body>
+</html>

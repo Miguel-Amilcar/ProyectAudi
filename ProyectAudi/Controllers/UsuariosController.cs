@@ -74,16 +74,27 @@ namespace ProyectAudi.Controllers
             return View(usuarios);
         }
 
+        [HttpGet]
         public IActionResult Create()
         {
-            int? rolId = HttpContext.Session.GetInt32("RolId");                     ////desde aca hasta 
+            int? rolId = HttpContext.Session.GetInt32("RolId");
             var permisos = PermisoService.ObtenerPermisos(_context, rolId ?? 0);
 
             if (!PermisoService.Tiene(permisos, "CREAR"))
                 return Forbid();
 
-            ViewBag.Permisos = permisos; // ✅ aca Para que la vista también lo reciba
-            CargarRoles();
+            ViewBag.Permisos = permisos;
+            ViewBag.EsSuperAdmin = rolId == 1;
+
+            if (rolId == 1)
+            {
+                ViewBag.Roles = _context.ROL
+                    .Select(r => new SelectListItem
+                    {
+                        Value = r.ROL_ID.ToString(),
+                        Text = r.ROL_NOMBRE
+                    }).ToList();
+            }
 
             return View();
         }
@@ -107,16 +118,23 @@ namespace ProyectAudi.Controllers
                     ModelState.AddModelError("FECHA_NACIMIENTO", "La edad debe estar entre 18 y 65 años.");
             }
 
-            // Validar rol
-            if (!_context.ROL.Any(r => r.ROL_ID == model.ROL_ID))
-                ModelState.AddModelError("ROL_ID", "El rol seleccionado no es válido.");
-
             // Validar duplicados
             if (_context.USUARIO.Any(u => u.CUI == model.CUI))
                 ModelState.AddModelError("CUI", "Ya existe un usuario con este CUI.");
 
             if (_context.USUARIO.Any(u => u.USUARIO_CORREO == model.USUARIO_CORREO))
                 ModelState.AddModelError("USUARIO_CORREO", "Ya existe un usuario con este correo.");
+
+            // Validar rol solo si es SuperAdmin
+            if (rolId == 1)
+            {
+                if (!_context.ROL.Any(r => r.ROL_ID == model.ROL_ID))
+                    ModelState.AddModelError("ROL_ID", "El rol seleccionado no es válido.");
+            }
+            else
+            {
+                model.ROL_ID = 0; // Seguridad: evitar asignación si no es SuperAdmin
+            }
 
             // Validar tamaño de archivos
             if (model.FotografiaFile?.Length > 5_000_000)
@@ -139,18 +157,24 @@ namespace ProyectAudi.Controllers
             if (model.DpiFile != null && !await _virusScanner.ArchivoEsSeguroAsync(model.DpiFile))
                 ModelState.AddModelError("DpiFile", "El archivo PDF contiene amenazas.");
 
-            // Validación final
             if (!ModelState.IsValid)
             {
                 ViewBag.Permisos = permisos;
-                CargarRoles();
+                ViewBag.EsSuperAdmin = rolId == 1;
+
+                if (rolId == 1)
+                {
+                    ViewBag.Roles = _context.ROL
+                        .Select(r => new SelectListItem
+                        {
+                            Value = r.ROL_ID.ToString(),
+                            Text = r.ROL_NOMBRE
+                        }).ToList();
+                }
+
                 return View(model);
             }
 
-            //var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
-            //var userAgent = Request.Headers["User-Agent"].ToString();
-
-            // Crear usuario
             var usuario = new USUARIO
             {
                 CUI = model.CUI,
@@ -168,18 +192,15 @@ namespace ProyectAudi.Controllers
                 PERSONA_TELEFONOCASA = model.PERSONA_TELEFONOCASA,
                 PERSONA_TELEFONOMOVIL = model.PERSONA_TELEFONOMOVIL,
                 USUARIO_CORREO = model.USUARIO_CORREO,
-                ROL_ID = model.ROL_ID!.Value,
+                ROL_ID = model.ROL_ID.Value,
                 ESTADO_TINY = 1,
                 CREADO_POR = User.Identity?.Name ?? "Sistema",
                 FECHA_CREACION = DateTime.Now,
-                ELIMINADO = false
+                ELIMINADO = false,
+                FOTOGRAFIA = await ConvertToBytesAsync(model.FotografiaFile),
+                DPI_PDF = await ConvertToBytesAsync(model.DpiFile)
             };
 
-            // Cargar archivos
-            usuario.FOTOGRAFIA = await ConvertToBytesAsync(model.FotografiaFile);
-            usuario.DPI_PDF = await ConvertToBytesAsync(model.DpiFile);
-
-            // Guardar en base de datos
             try
             {
                 _context.USUARIO.Add(usuario);
@@ -189,10 +210,24 @@ namespace ProyectAudi.Controllers
             catch (Exception)
             {
                 ModelState.AddModelError("", "Ocurrió un error al guardar el usuario.");
-                CargarRoles();
+                ViewBag.Permisos = permisos;
+                ViewBag.EsSuperAdmin = rolId == 1;
+
+                if (rolId == 1)
+                {
+                    ViewBag.Roles = _context.ROL
+                        .Select(r => new SelectListItem
+                        {
+                            Value = r.ROL_ID.ToString(),
+                            Text = r.ROL_NOMBRE
+                        }).ToList();
+                }
+
                 return View(model);
             }
         }
+
+
 
         // Método auxiliar para convertir archivos a byte[]
         private async Task<byte[]> ConvertToBytesAsync(IFormFile? file)
@@ -249,20 +284,27 @@ namespace ProyectAudi.Controllers
         }
         public async Task<IActionResult> Edit(int id)
         {
-
-            int? rolId = HttpContext.Session.GetInt32("RolId");                     ///desde aca hasta
+            int? rolId = HttpContext.Session.GetInt32("RolId");
             var permisos = PermisoService.ObtenerPermisos(_context, rolId ?? 0);
 
             if (!PermisoService.Tiene(permisos, "EDITAR"))
                 return Forbid();
 
-            ViewBag.Permisos = permisos; // ✅ Para que la vista también lo reciba
-
+            ViewBag.Permisos = permisos;
+            ViewBag.EsSuperAdmin = rolId == 1;
 
             var usuario = await _context.USUARIO.FindAsync(id);
             if (usuario == null || usuario.ELIMINADO) return NotFound();
 
-            CargarRoles();
+            if (rolId == 1)
+            {
+                ViewBag.Roles = _context.ROL
+                    .Select(r => new SelectListItem
+                    {
+                        Value = r.ROL_ID.ToString(),
+                        Text = r.ROL_NOMBRE
+                    }).ToList();
+            }
 
             var model = new EditViewModel
             {
@@ -292,12 +334,14 @@ namespace ProyectAudi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditViewModel model)
         {
-            int? rolId = HttpContext.Session.GetInt32("RolId");                     //desde aca
-            var permisos = PermisoService.ObtenerPermisos(_context, rolId ?? 0);     
+            int? rolId = HttpContext.Session.GetInt32("RolId");
+            var permisos = PermisoService.ObtenerPermisos(_context, rolId ?? 0);
 
             if (!PermisoService.Tiene(permisos, "EDITAR"))
-                return Forbid();                                                    //hasta aca
+                return Forbid();
 
+            ViewBag.Permisos = permisos;
+            ViewBag.EsSuperAdmin = rolId == 1;
 
             // Validar edad
             if (model.FECHA_NACIMIENTO.HasValue)
@@ -308,9 +352,19 @@ namespace ProyectAudi.Controllers
                     ModelState.AddModelError("FECHA_NACIMIENTO", "La edad debe estar entre 18 y 65 años.");
             }
 
-            // Validar rol
-            if (!_context.ROL.Any(r => r.ROL_ID == model.ROL_ID))
-                ModelState.AddModelError("ROL_ID", "El rol seleccionado no es válido.");
+            // Validar rol solo si el usuario actual es SuperAdmin
+            if (rolId == 1)
+            {
+                if (!_context.ROL.Any(r => r.ROL_ID == model.ROL_ID))
+                    ModelState.AddModelError("ROL_ID", "El rol seleccionado no es válido.");
+
+                ViewBag.Roles = _context.ROL
+                    .Select(r => new SelectListItem
+                    {
+                        Value = r.ROL_ID.ToString(),
+                        Text = r.ROL_NOMBRE
+                    }).ToList();
+            }
 
             // Validar tamaño de archivos
             if (model.FotografiaFile?.Length > 5_000_000)
@@ -326,16 +380,9 @@ namespace ProyectAudi.Controllers
             if (model.DpiFile != null && !await _virusScanner.ArchivoEsSeguroAsync(model.DpiFile))
                 ModelState.AddModelError("DpiFile", "El archivo PDF contiene amenazas.");
 
-            // Validación final
             if (!ModelState.IsValid)
-            {
-                ViewBag.Permisos = permisos;    ///aca tambien se agrega 
-
-                CargarRoles();
                 return View(model);
-            }
 
-            // Buscar usuario
             var usuario = await _context.USUARIO.FindAsync(model.USUARIO_ID);
             if (usuario == null || usuario.ELIMINADO) return NotFound();
 
@@ -355,11 +402,14 @@ namespace ProyectAudi.Controllers
             usuario.PERSONA_TELEFONOCASA = model.PERSONA_TELEFONOCASA;
             usuario.PERSONA_TELEFONOMOVIL = model.PERSONA_TELEFONOMOVIL;
             usuario.USUARIO_CORREO = model.USUARIO_CORREO;
-            usuario.ROL_ID = model.ROL_ID;
             usuario.MODIFICADO_POR = model.MODIFICADO_POR;
             usuario.FECHA_MODIFICACION = DateTime.Now;
 
-            // Guardar archivos si fueron validados
+            // Solo SuperAdmin puede modificar el rol
+            if (rolId == 1)
+                usuario.ROL_ID = model.ROL_ID;
+
+            // Guardar archivos
             if (model.FotografiaFile != null)
             {
                 using var ms = new MemoryStream();
@@ -373,10 +423,11 @@ namespace ProyectAudi.Controllers
                 await model.DpiFile.CopyToAsync(ms);
                 usuario.DPI_PDF = ms.ToArray();
             }
-
+            _context.Entry(usuario).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
         public async Task<IActionResult> Delete(int id)
         {
             int? rolId = HttpContext.Session.GetInt32("RolId");
